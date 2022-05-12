@@ -7,7 +7,7 @@ const ForgeViewer = (props: {urn: string}) => {
 		initializeViewer(props.urn);
 	}, [props.urn]);
 
-	return <div id="forgeviewer" />;
+	return <div style={{width: "100px"}}id="forgeviewer" />;
 };
 
 export default ForgeViewer;

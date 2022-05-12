@@ -29,7 +29,6 @@ export const initializeViewer = async (urn: string) => {
 			container = document.getElementById("forgeviewer");
 			if (container !== null) {
 				viewer = new Autodesk.Viewing.GuiViewer3D(container, {
-					extensions: ["TreeElementExtension"],
 				});
 			}
 			Autodesk.Viewing.Initializer(options, function onInitialized() {
