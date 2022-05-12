@@ -29,17 +29,12 @@ namespace Speckle.ModelDerivative.Connector.Api.Controllers
         /// </summary>
         [HttpGet("streams")]
         [ProducesResponseType(typeof(List<Core.Api.Stream>), 200)]
-        [ProducesResponseType(typeof(BadRequestResult), 400)]
-        [ProducesResponseType(typeof(NotFoundResult), 404)]
         [SwaggerOperation(OperationId = "GetStreams", Tags = new[] { "Stream" })]
-        public async Task<IActionResult> GetStreams()
+        public async Task<List<Core.Api.Stream>> GetStreams()
         {
             var streamsList = await _speckleClient.StreamsGet(20);
 
-            if (streamsList == null)
-                return NotFound();
-
-            return Ok(streamsList);
+            return streamsList;
         }
 
 
