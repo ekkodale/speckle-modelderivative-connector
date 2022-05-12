@@ -4,14 +4,13 @@ import CSS from "csstype"
 import ForgeViewer from "./ForgeViewer"
 
 const forgeViewerContainer: CSS.Properties = {
-	marginTop: "5vh",
-	paddingBottom: "5vh",
+	paddingLeft: "5vh",
     height: "90%"
 };
 
 const forgeViewer: CSS.Properties = {
 	border: "1px solid #1F85DE",
-	height: "100%",
+	height: "90%",
 	width: "98%",
 };
 
@@ -37,7 +36,7 @@ export const Dashboard = () => {
 			</div>
 			<div className="row" style={forgeViewerContainer}>
                 <div className="col-sm-12 px-0" style={forgeViewer}>
-                    <ForgeViewer urn={""} />
+                    <ForgeViewer urn={"urn:dXJuOmFkc2sub2JqZWN0czpvcy5vYmplY3Q6c3BlY2tsZWhhY2thdGhvbi9yYWNfYmFzaWNfc2FtcGxlX3Byb2plY3QucnZ0"} />
                 </div>
 			</div>
 		</div>
