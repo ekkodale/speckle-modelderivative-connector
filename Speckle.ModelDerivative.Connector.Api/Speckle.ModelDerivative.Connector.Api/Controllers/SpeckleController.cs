@@ -41,7 +41,7 @@ namespace Speckle.ModelDerivative.Connector.Api.Controllers
         /// <summary>
         /// Commits speckle objects
         /// </summary>
-        [HttpPost]
+        [HttpPost("commits")]
         [ProducesResponseType(typeof(OkResult), 200)]
         [ProducesResponseType(typeof(BadRequestResult), 400)]
         [ProducesResponseType(typeof(NotFoundResult), 404)]

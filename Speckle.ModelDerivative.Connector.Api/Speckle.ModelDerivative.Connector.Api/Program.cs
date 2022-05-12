@@ -60,6 +60,7 @@ app.UseSwagger();
 
 app.UseSwaggerUI(options =>
 {
+    options.RoutePrefix = "";
     options.SwaggerEndpoint("/swagger/v1/swagger.json", "v1");
 });
 
