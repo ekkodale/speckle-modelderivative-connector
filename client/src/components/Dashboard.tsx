@@ -11,6 +11,7 @@ const forgeViewerContainer: CSS.Properties = {
 const forgeViewer: CSS.Properties = {
 	border: "1px solid #1F85DE",
 	height: "90%",
+    position: "relative",
 	width: "98%",
 };
 
