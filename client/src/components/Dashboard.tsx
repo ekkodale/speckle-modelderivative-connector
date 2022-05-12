@@ -2,6 +2,8 @@
 import CSS from "csstype"
 //Components
 import ForgeViewer from "./ForgeViewer"
+//Extensions
+import { ModelUrnExtensionHelper } from "./ModelUrnExtensionHelper";
 
 const forgeViewerContainer: CSS.Properties = {
 	paddingLeft: "5vh",
@@ -16,15 +18,21 @@ const forgeViewer: CSS.Properties = {
 };
 
 export const Dashboard = () => {
+
+    const handleModelChange = () => {
+        const inputValue: string = (document.getElementById('modelUrn') as HTMLInputElement).value
+        ModelUrnExtensionHelper.getInstance().loadNewModel(inputValue);
+    }
+
 	return (
 		<div className="container-fluid" style={{height: "100vh"}}>
 			<div className="row" style={{height: "10%"}}>
 				<div className="col-sm-3">
 					<div className="container" style={{marginTop: "5%"}}>
 						<div className="input-group mb-3">
-							<input type="text" className="form-control" placeholder="Model URN" aria-label="Recipient's username" aria-describedby="basic-addon2" />
+							<input type="text" className="form-control" id="modelUrn" placeholder="Model URN" aria-label="ModelUrn" aria-describedby="basic-addon2" />
 							<div className="input-group-append">
-								<button className="btn btn-outline-secondary" type="button">
+								<button className="btn btn-outline-secondary" type="button" onClick={() => handleModelChange()}>
 									Change
 								</button>
 							</div>
