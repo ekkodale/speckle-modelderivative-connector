@@ -1,6 +1,8 @@
 using Microsoft.OpenApi.Models;
 using Speckle.Core.Credentials;
 using Speckle.Core.Api;
+using Speckle.ModelDerivative.Connector.Api.Services;
+
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -38,6 +40,14 @@ UserInfo userinfo = await AccountManager.GetUserInfo(token, serverUrl);
 var account = new Account { isDefault = true, token = token, serverInfo = serverinfo, userInfo = userinfo };
 var speckleClient = new Client(account);
 
+string corsPolicy = "PublicCorsPolicy";
+builder.Services.AddCors(p => p.AddPolicy(corsPolicy, builder =>
+{
+    builder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader();
+}));
+
+builder.Services.AddTransient<IModelService, ModelService>();
+
 builder.Services.AddSingleton(speckleClient);
 
 var app = builder.Build();
@@ -69,7 +79,6 @@ app.UseEndpoints(endpoints =>
     endpoints.MapControllers();
 });
 
-
-app.UseAuthorization();
+app.UseCors(corsPolicy);
 
 app.Run();
