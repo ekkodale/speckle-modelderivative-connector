@@ -4,6 +4,7 @@ using Speckle.Core.Api;
 using Speckle.Core.Transports;
 using Speckle.Core.Models;
 using Speckle.ModelDerivative.Connector.Api.Services;
+using Speckle.ModelDerivative.Connector.Api.Threejs;
 
 namespace Speckle.ModelDerivative.Connector.Api.Controllers
 {
@@ -30,11 +31,16 @@ namespace Speckle.ModelDerivative.Connector.Api.Controllers
         [HttpGet("streams")]
         [ProducesResponseType(typeof(List<Core.Api.Stream>), 200)]
         [SwaggerOperation(OperationId = "GetStreams", Tags = new[] { "Stream" })]
-        public async Task<List<Core.Api.Stream>> GetStreams()
+        public async Task<IActionResult> GetStreams()
         {
             var streamsList = await _speckleClient.StreamsGet(20);
 
-            return streamsList;
+            if(streamsList == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(streamsList);
         }
 
 
@@ -45,10 +51,14 @@ namespace Speckle.ModelDerivative.Connector.Api.Controllers
         [ProducesResponseType(typeof(OkResult), 200)]
         [ProducesResponseType(typeof(BadRequestResult), 400)]
         [ProducesResponseType(typeof(NotFoundResult), 404)]
-        [ProducesResponseType(typeof(UnauthorizedResult), 401)]
         [SwaggerOperation(OperationId = "CommitObjects", Tags = new[] { "Commit" })]
-        public async Task<IActionResult> CommitObjects(string streamId)
+        public async Task<IActionResult> CommitObjects(string streamId, [FromBody] List<Va3cObject> va3cObjects)
         {
+            if (string.IsNullOrEmpty(streamId))
+            {
+                return BadRequest();
+            }
+
             var serverTransport = new ServerTransport(_speckleClient.Account, streamId);
 
             var commitObject = new Base();
@@ -65,7 +75,7 @@ namespace Speckle.ModelDerivative.Connector.Api.Controllers
                 objectId = objectId,
                 message = "Model sent",
                 sourceApplication = "Forge",
-                //totalChildrenCount = objectList.Count
+                totalChildrenCount = va3cObjects.Count
             };
 
             string commitId = await _speckleClient.CommitCreate(commitCreateInput);

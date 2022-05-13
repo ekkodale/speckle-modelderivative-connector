@@ -2,7 +2,7 @@ using Microsoft.OpenApi.Models;
 using Speckle.Core.Credentials;
 using Speckle.Core.Api;
 using Speckle.ModelDerivative.Connector.Api.Services;
-
+using System.Reflection;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -18,6 +18,8 @@ builder.Services.AddSwaggerGen(options =>
         Title = "Speckle Model Derivative Connector API",
         Description = "An ASP.NET Core Web API for Speckle Model Derivative Connector",
     });
+    var xmlFilename = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+    options.IncludeXmlComments(System.IO.Path.Combine(AppContext.BaseDirectory, xmlFilename), true);
 });
 
 // ------------------------------------------------------------------------------------
@@ -27,6 +29,8 @@ builder.Configuration
          .AddJsonFile("appsettings.json", false, true)
          .AddJsonFile($"appsettings.{builder.Environment.EnvironmentName}.json", optional: true, reloadOnChange: true)
          .AddEnvironmentVariables();
+
+builder.Services.AddRouting(options => options.LowercaseUrls = true);
 
 // ------------------------------------------------------------------------------------
 //  Configure speckle.
@@ -74,8 +78,6 @@ app.UseSwaggerUI(options =>
     options.RoutePrefix = "";
     options.SwaggerEndpoint("/swagger/v1/swagger.json", "v1");
 });
-
-
 
 
 app.UseAuthorization();

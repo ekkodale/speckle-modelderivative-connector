@@ -19,10 +19,11 @@ export class Client {
     }
 
     /**
+     * Get speckle streams available
      * @return Success
      */
     streams(): Promise<Stream[]> {
-        let url_ = this.baseUrl + "/Speckle/streams";
+        let url_ = this.baseUrl + "/speckle/streams";
         url_ = url_.replace(/[?&]$/, "");
 
         let options_: RequestInit = {
@@ -63,20 +64,26 @@ export class Client {
     }
 
     /**
+     * Commits speckle objects
      * @param streamId (optional) 
+     * @param body (optional) 
      * @return Success
      */
-    commits(streamId: string | undefined): Promise<OkResult> {
-        let url_ = this.baseUrl + "/Speckle/commits?";
+    commits(streamId: string | undefined, body: Va3cObject[] | undefined): Promise<OkResult> {
+        let url_ = this.baseUrl + "/speckle/commits?";
         if (streamId === null)
             throw new Error("The parameter 'streamId' cannot be null.");
         else if (streamId !== undefined)
             url_ += "streamId=" + encodeURIComponent("" + streamId) + "&";
         url_ = url_.replace(/[?&]$/, "");
 
+        const content_ = JSON.stringify(body);
+
         let options_: RequestInit = {
+            body: content_,
             method: "POST",
             headers: {
+                "Content-Type": "application/json",
                 "Accept": "text/plain"
             }
         };
@@ -109,13 +116,6 @@ export class Client {
             let resultData404 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
             result404 = NotFoundResult.fromJS(resultData404);
             return throwException("Not Found", status, _responseText, _headers, result404);
-            });
-        } else if (status === 401) {
-            return response.text().then((_responseText) => {
-            let result401: any = null;
-            let resultData401 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result401 = UnauthorizedResult.fromJS(resultData401);
-            return throwException("Unauthorized", status, _responseText, _headers, result401);
             });
         } else if (status !== 200 && status !== 204) {
             return response.text().then((_responseText) => {
@@ -870,10 +870,13 @@ export interface IStream {
     object?: SpeckleObject;
 }
 
-export class UnauthorizedResult implements IUnauthorizedResult {
-    statusCode?: number;
+export class Va3cGeometry implements IVa3cGeometry {
+    uuid?: string | undefined;
+    type?: string | undefined;
+    data?: Va3cGeometryData;
+    materials?: Va3cMaterial[] | undefined;
 
-    constructor(data?: IUnauthorizedResult) {
+    constructor(data?: IVa3cGeometry) {
         if (data) {
             for (var property in data) {
                 if (data.hasOwnProperty(property))
@@ -884,30 +887,329 @@ export class UnauthorizedResult implements IUnauthorizedResult {
 
     init(_data?: any) {
         if (_data) {
-            this.statusCode = _data["statusCode"];
+            this.uuid = _data["uuid"];
+            this.type = _data["type"];
+            this.data = _data["data"] ? Va3cGeometryData.fromJS(_data["data"]) : <any>undefined;
+            if (Array.isArray(_data["materials"])) {
+                this.materials = [] as any;
+                for (let item of _data["materials"])
+                    this.materials!.push(Va3cMaterial.fromJS(item));
+            }
         }
     }
 
-    static fromJS(data: any): UnauthorizedResult {
+    static fromJS(data: any): Va3cGeometry {
         data = typeof data === 'object' ? data : {};
-        let result = new UnauthorizedResult();
+        let result = new Va3cGeometry();
         result.init(data);
         return result;
     }
 
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
-        data["statusCode"] = this.statusCode;
+        data["uuid"] = this.uuid;
+        data["type"] = this.type;
+        data["data"] = this.data ? this.data.toJSON() : <any>undefined;
+        if (Array.isArray(this.materials)) {
+            data["materials"] = [];
+            for (let item of this.materials)
+                data["materials"].push(item.toJSON());
+        }
         return data;
     }
 }
 
-export interface IUnauthorizedResult {
-    statusCode?: number;
+export interface IVa3cGeometry {
+    uuid?: string | undefined;
+    type?: string | undefined;
+    data?: Va3cGeometryData;
+    materials?: Va3cMaterial[] | undefined;
+}
+
+export class Va3cGeometryData implements IVa3cGeometryData {
+    vertices?: number[] | undefined;
+    normals?: number[] | undefined;
+    colors?: number[] | undefined;
+    uvs?: number[] | undefined;
+    faces?: number[] | undefined;
+    scale?: number;
+    visible?: boolean;
+    castShadow?: boolean;
+    receiveShadow?: boolean;
+    doubleSided?: boolean;
+
+    constructor(data?: IVa3cGeometryData) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            if (Array.isArray(_data["vertices"])) {
+                this.vertices = [] as any;
+                for (let item of _data["vertices"])
+                    this.vertices!.push(item);
+            }
+            if (Array.isArray(_data["normals"])) {
+                this.normals = [] as any;
+                for (let item of _data["normals"])
+                    this.normals!.push(item);
+            }
+            if (Array.isArray(_data["colors"])) {
+                this.colors = [] as any;
+                for (let item of _data["colors"])
+                    this.colors!.push(item);
+            }
+            if (Array.isArray(_data["uvs"])) {
+                this.uvs = [] as any;
+                for (let item of _data["uvs"])
+                    this.uvs!.push(item);
+            }
+            if (Array.isArray(_data["faces"])) {
+                this.faces = [] as any;
+                for (let item of _data["faces"])
+                    this.faces!.push(item);
+            }
+            this.scale = _data["scale"];
+            this.visible = _data["visible"];
+            this.castShadow = _data["castShadow"];
+            this.receiveShadow = _data["receiveShadow"];
+            this.doubleSided = _data["doubleSided"];
+        }
+    }
+
+    static fromJS(data: any): Va3cGeometryData {
+        data = typeof data === 'object' ? data : {};
+        let result = new Va3cGeometryData();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        if (Array.isArray(this.vertices)) {
+            data["vertices"] = [];
+            for (let item of this.vertices)
+                data["vertices"].push(item);
+        }
+        if (Array.isArray(this.normals)) {
+            data["normals"] = [];
+            for (let item of this.normals)
+                data["normals"].push(item);
+        }
+        if (Array.isArray(this.colors)) {
+            data["colors"] = [];
+            for (let item of this.colors)
+                data["colors"].push(item);
+        }
+        if (Array.isArray(this.uvs)) {
+            data["uvs"] = [];
+            for (let item of this.uvs)
+                data["uvs"].push(item);
+        }
+        if (Array.isArray(this.faces)) {
+            data["faces"] = [];
+            for (let item of this.faces)
+                data["faces"].push(item);
+        }
+        data["scale"] = this.scale;
+        data["visible"] = this.visible;
+        data["castShadow"] = this.castShadow;
+        data["receiveShadow"] = this.receiveShadow;
+        data["doubleSided"] = this.doubleSided;
+        return data;
+    }
+}
+
+export interface IVa3cGeometryData {
+    vertices?: number[] | undefined;
+    normals?: number[] | undefined;
+    colors?: number[] | undefined;
+    uvs?: number[] | undefined;
+    faces?: number[] | undefined;
+    scale?: number;
+    visible?: boolean;
+    castShadow?: boolean;
+    receiveShadow?: boolean;
+    doubleSided?: boolean;
+}
+
+/** Based on MeshPhongMaterial obtained by exporting a cube from the three.js editor. */
+export class Va3cMaterial implements IVa3cMaterial {
+    uuid?: string | undefined;
+    name?: string | undefined;
+    type?: string | undefined;
+    color?: number;
+    ambient?: number;
+    emissive?: number;
+    specular?: number;
+    shininess?: number;
+    opacity?: number;
+    transparent?: boolean;
+    wireframe?: boolean;
+
+    constructor(data?: IVa3cMaterial) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.uuid = _data["uuid"];
+            this.name = _data["name"];
+            this.type = _data["type"];
+            this.color = _data["color"];
+            this.ambient = _data["ambient"];
+            this.emissive = _data["emissive"];
+            this.specular = _data["specular"];
+            this.shininess = _data["shininess"];
+            this.opacity = _data["opacity"];
+            this.transparent = _data["transparent"];
+            this.wireframe = _data["wireframe"];
+        }
+    }
+
+    static fromJS(data: any): Va3cMaterial {
+        data = typeof data === 'object' ? data : {};
+        let result = new Va3cMaterial();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["uuid"] = this.uuid;
+        data["name"] = this.name;
+        data["type"] = this.type;
+        data["color"] = this.color;
+        data["ambient"] = this.ambient;
+        data["emissive"] = this.emissive;
+        data["specular"] = this.specular;
+        data["shininess"] = this.shininess;
+        data["opacity"] = this.opacity;
+        data["transparent"] = this.transparent;
+        data["wireframe"] = this.wireframe;
+        return data;
+    }
+}
+
+/** Based on MeshPhongMaterial obtained by exporting a cube from the three.js editor. */
+export interface IVa3cMaterial {
+    uuid?: string | undefined;
+    name?: string | undefined;
+    type?: string | undefined;
+    color?: number;
+    ambient?: number;
+    emissive?: number;
+    specular?: number;
+    shininess?: number;
+    opacity?: number;
+    transparent?: boolean;
+    wireframe?: boolean;
+}
+
+export class Va3cObject implements IVa3cObject {
+    uuid?: string | undefined;
+    name?: string | undefined;
+    type?: string | undefined;
+    matrix?: number[] | undefined;
+    children?: Va3cObject[] | undefined;
+    geometry?: Va3cGeometry;
+    material?: Va3cMaterial;
+    userData?: { [key: string]: string; } | undefined;
+
+    constructor(data?: IVa3cObject) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.uuid = _data["uuid"];
+            this.name = _data["name"];
+            this.type = _data["type"];
+            if (Array.isArray(_data["matrix"])) {
+                this.matrix = [] as any;
+                for (let item of _data["matrix"])
+                    this.matrix!.push(item);
+            }
+            if (Array.isArray(_data["children"])) {
+                this.children = [] as any;
+                for (let item of _data["children"])
+                    this.children!.push(Va3cObject.fromJS(item));
+            }
+            this.geometry = _data["geometry"] ? Va3cGeometry.fromJS(_data["geometry"]) : <any>undefined;
+            this.material = _data["material"] ? Va3cMaterial.fromJS(_data["material"]) : <any>undefined;
+            if (_data["userData"]) {
+                this.userData = {} as any;
+                for (let key in _data["userData"]) {
+                    if (_data["userData"].hasOwnProperty(key))
+                        (<any>this.userData)![key] = _data["userData"][key];
+                }
+            }
+        }
+    }
+
+    static fromJS(data: any): Va3cObject {
+        data = typeof data === 'object' ? data : {};
+        let result = new Va3cObject();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["uuid"] = this.uuid;
+        data["name"] = this.name;
+        data["type"] = this.type;
+        if (Array.isArray(this.matrix)) {
+            data["matrix"] = [];
+            for (let item of this.matrix)
+                data["matrix"].push(item);
+        }
+        if (Array.isArray(this.children)) {
+            data["children"] = [];
+            for (let item of this.children)
+                data["children"].push(item.toJSON());
+        }
+        data["geometry"] = this.geometry ? this.geometry.toJSON() : <any>undefined;
+        data["material"] = this.material ? this.material.toJSON() : <any>undefined;
+        if (this.userData) {
+            data["userData"] = {};
+            for (let key in this.userData) {
+                if (this.userData.hasOwnProperty(key))
+                    (<any>data["userData"])[key] = this.userData[key];
+            }
+        }
+        return data;
+    }
+}
+
+export interface IVa3cObject {
+    uuid?: string | undefined;
+    name?: string | undefined;
+    type?: string | undefined;
+    matrix?: number[] | undefined;
+    children?: Va3cObject[] | undefined;
+    geometry?: Va3cGeometry;
+    material?: Va3cMaterial;
+    userData?: { [key: string]: string; } | undefined;
 }
 
 export class ApiException extends Error {
-    message: string;
+    override message: string;
     status: number;
     response: string;
     headers: { [key: string]: any; };
