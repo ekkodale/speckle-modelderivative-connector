@@ -24,6 +24,8 @@ export class MeshExtension extends Autodesk.Viewing.Extension {
 		let instanceTree = model.getData().instanceTree;
 		instanceTree.fragList.fragments.fragId2dbId.forEach((element: number) => {
 			console.log(this.viewer.impl.getRenderProxy(this.viewer.model, 0));
+			console.log(this.viewer.impl.getRenderProxy(this.viewer.model, 100));
+			return;
 		});
 	}
 }

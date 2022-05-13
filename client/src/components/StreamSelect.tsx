@@ -1,11 +1,16 @@
 import React, { useState } from "react";
+import { useSelector } from "react-redux";
 import { Client, Stream } from "../api/client";
 import Config from "../Config";
+import { DashboardState } from "../context/DashboardReducer";
 
 const StreamSelect = () => {
   const client: Client = new Client(Config.BaseURL);
   const [streams, setStreams] = React.useState<Stream[]>();
   const [streamsLoaded, setStreamsLoaded] = useState(false);
+  const viewerInitialized: any = useSelector<DashboardState>(
+		(state: any) => state.dashboardReducer.viewerInitialized
+	);
 
   if (!streamsLoaded) {
     client
@@ -20,8 +25,9 @@ const StreamSelect = () => {
   }
 
   return (
+    <div style={{display: "inline-block", width: "20vw"}}>
     <div className="row">
-      <div className="col">
+      <div>
         <label
           className="input-group-text"
           form="inputGroupSelect01"
@@ -30,17 +36,19 @@ const StreamSelect = () => {
           Streams
         </label>
       </div>
-      <div className="col" style={{ marginLeft: "-60%" }}>
+      <div className="col" style={{ marginLeft: "-13%" }}>
         <select
           className="custom-select"
           id="inputGroupSelect01"
           style={{ height: "100%" }}
+          disabled={!viewerInitialized}
         >
           {streams?.map((stream) => (
             <option value={stream.id}>{stream.id}</option>
           ))}
         </select>
       </div>
+    </div>
     </div>
   );
 };
