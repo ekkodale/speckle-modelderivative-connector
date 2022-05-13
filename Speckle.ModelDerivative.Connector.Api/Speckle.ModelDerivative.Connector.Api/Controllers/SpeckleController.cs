@@ -61,9 +61,7 @@ namespace Speckle.ModelDerivative.Connector.Api.Controllers
 
             var serverTransport = new ServerTransport(_speckleClient.Account, streamId);
 
-            var commitObject = new Base();
-
-            var models = await _modelService.ConvertToSpeckle();
+            var commitObject = await _modelService.ConvertToSpeckle(va3cObjects);
 
             //=============================================================================
             string objectId = await Operations.Send(commitObject, new List<ITransport>() { serverTransport }, false);

@@ -1,4 +1,5 @@
 ﻿using Speckle.Core.Models;
+using Speckle.ModelDerivative.Connector.Api.Threejs;
 
 namespace Speckle.ModelDerivative.Connector.Api.Services
 {
@@ -11,6 +12,6 @@ namespace Speckle.ModelDerivative.Connector.Api.Services
         /// Converts given ThreeJS objects to speckle objects
         /// </summary>
         /// <returns></returns>
-        Task<Base> ConvertToSpeckle();
+        Task<Base> ConvertToSpeckle(List<Va3cObject> threeObjects);
     }
 }
