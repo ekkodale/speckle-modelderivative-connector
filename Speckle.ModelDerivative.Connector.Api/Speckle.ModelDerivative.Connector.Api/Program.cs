@@ -22,6 +22,8 @@ builder.Services.AddSwaggerGen(options =>
     options.IncludeXmlComments(System.IO.Path.Combine(AppContext.BaseDirectory, xmlFilename), true);
 });
 
+
+
 // ------------------------------------------------------------------------------------
 //  Configuration.
 // ------------------------------------------------------------------------------------
