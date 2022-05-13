@@ -1149,14 +1149,54 @@ export interface IVa3cMaterial {
     wireframe?: boolean;
 }
 
-export class Va3cObject implements IVa3cObject {
+export class Va3cMesh implements IVa3cMesh {
     uuid?: string | null;
-    name?: string | null;
-    type?: string | null;
-    matrix?: number[] | null;
-    children?: Va3cObject[] | null;
     geometry?: Va3cGeometry;
     material?: Va3cMaterial;
+
+    constructor(data?: IVa3cMesh) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.uuid = _data["uuid"] !== undefined ? _data["uuid"] : <any>null;
+            this.geometry = _data["geometry"] ? Va3cGeometry.fromJS(_data["geometry"]) : <any>null;
+            this.material = _data["material"] ? Va3cMaterial.fromJS(_data["material"]) : <any>null;
+        }
+    }
+
+    static fromJS(data: any): Va3cMesh {
+        data = typeof data === 'object' ? data : {};
+        let result = new Va3cMesh();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["uuid"] = this.uuid !== undefined ? this.uuid : <any>null;
+        data["geometry"] = this.geometry ? this.geometry.toJSON() : <any>null;
+        data["material"] = this.material ? this.material.toJSON() : <any>null;
+        return data;
+    }
+}
+
+export interface IVa3cMesh {
+    uuid?: string | null;
+    geometry?: Va3cGeometry;
+    material?: Va3cMaterial;
+}
+
+export class Va3cObject implements IVa3cObject {
+    uuid?: string | null;
+    matrix?: number[] | null;
+    children?: Va3cMesh[] | null;
     userData?: { [key: string]: string; } | null;
 
     constructor(data?: IVa3cObject) {
@@ -1171,8 +1211,6 @@ export class Va3cObject implements IVa3cObject {
     init(_data?: any) {
         if (_data) {
             this.uuid = _data["uuid"] !== undefined ? _data["uuid"] : <any>null;
-            this.name = _data["name"] !== undefined ? _data["name"] : <any>null;
-            this.type = _data["type"] !== undefined ? _data["type"] : <any>null;
             if (Array.isArray(_data["matrix"])) {
                 this.matrix = [] as any;
                 for (let item of _data["matrix"])
@@ -1184,13 +1222,11 @@ export class Va3cObject implements IVa3cObject {
             if (Array.isArray(_data["children"])) {
                 this.children = [] as any;
                 for (let item of _data["children"])
-                    this.children!.push(Va3cObject.fromJS(item));
+                    this.children!.push(Va3cMesh.fromJS(item));
             }
             else {
                 this.children = <any>null;
             }
-            this.geometry = _data["geometry"] ? Va3cGeometry.fromJS(_data["geometry"]) : <any>null;
-            this.material = _data["material"] ? Va3cMaterial.fromJS(_data["material"]) : <any>null;
             if (_data["userData"]) {
                 this.userData = {} as any;
                 for (let key in _data["userData"]) {
@@ -1214,8 +1250,6 @@ export class Va3cObject implements IVa3cObject {
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
         data["uuid"] = this.uuid !== undefined ? this.uuid : <any>null;
-        data["name"] = this.name !== undefined ? this.name : <any>null;
-        data["type"] = this.type !== undefined ? this.type : <any>null;
         if (Array.isArray(this.matrix)) {
             data["matrix"] = [];
             for (let item of this.matrix)
@@ -1226,8 +1260,6 @@ export class Va3cObject implements IVa3cObject {
             for (let item of this.children)
                 data["children"].push(item.toJSON());
         }
-        data["geometry"] = this.geometry ? this.geometry.toJSON() : <any>null;
-        data["material"] = this.material ? this.material.toJSON() : <any>null;
         if (this.userData) {
             data["userData"] = {};
             for (let key in this.userData) {
@@ -1241,12 +1273,8 @@ export class Va3cObject implements IVa3cObject {
 
 export interface IVa3cObject {
     uuid?: string | null;
-    name?: string | null;
-    type?: string | null;
     matrix?: number[] | null;
-    children?: Va3cObject[] | null;
-    geometry?: Va3cGeometry;
-    material?: Va3cMaterial;
+    children?: Va3cMesh[] | null;
     userData?: { [key: string]: string; } | null;
 }
 
