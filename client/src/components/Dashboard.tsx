@@ -40,6 +40,13 @@ export const Dashboard = () => {
     MeshExtensionHelper.getInstance().commitFunc(selectValue);
   };
 
+  const commitFuncc = () => {
+    const selectValue: string = (
+      document.getElementById("streamID") as HTMLSelectElement
+    ).value;
+    MeshExtensionHelper.getInstance().commitFuncc(selectValue);
+  };
+
   return (
     <div className="container-fluid" style={{ height: "100vh" }}>
       <div className="row" style={{ height: "10%", paddingTop: "2%" }}>
@@ -79,6 +86,16 @@ export const Dashboard = () => {
               disabled={!viewerInitialized}
             >
               Commit
+              <i className="bi bi-check-lg" style={{ float: "right" }}></i>
+            </button>
+			<button
+              className="btn btn-outline-primary waves-effect"
+              type="button"
+              style={{ display: "inline-block", width: "8vw", height: "4vh" }}
+              onClick={() => commitFuncc()}
+              disabled={!viewerInitialized}
+            >
+              Actually Commit
               <i className="bi bi-check-lg" style={{ float: "right" }}></i>
             </button>
           </div>

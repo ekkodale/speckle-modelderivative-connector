@@ -1,4 +1,4 @@
-import {Va3cMesh} from "./../api/client";
+import {Va3cContainer, Va3cMesh, Va3cProperty} from "./../api/client";
 import {Client, OkResult, Va3cGeometry, Va3cGeometryData, Va3cMaterial, Va3cObject} from "../api/client";
 import Config from "../Config";
 import {MeshExtensionHelper} from "./MeshExtensionHelper";
@@ -24,7 +24,6 @@ export class MeshExtension extends Autodesk.Viewing.Extension {
 	}
 
 	async commitFunc(streamID: string) {
-		const client: Client = new Client(Config.BaseURL);
 		const models: Autodesk.Viewing.Model[] = this.viewer.getAllModels();
 		const model: Autodesk.Viewing.Model = models[0];
 
@@ -46,11 +45,12 @@ export class MeshExtension extends Autodesk.Viewing.Extension {
 			model.getProperties(key, (result: Autodesk.Viewing.PropertyResult) => {
 				let rootVac3Object: Va3cObject = new Va3cObject();
 				rootVac3Object.uuid = result.externalId;
-				rootVac3Object.userData = {};
+				rootVac3Object.userData = [];
 				result.properties.forEach((property: Autodesk.Viewing.Property) => {
-					if (rootVac3Object.userData) {
-						rootVac3Object.userData[property.displayName] = property.displayValue;
-					}
+					let vacProperty: Va3cProperty = new Va3cProperty();
+					vacProperty.name = property.displayName;
+					vacProperty.value = property.displayValue;
+					rootVac3Object.userData?.push(vacProperty);
 				});
 				rootVac3Object.children = [];
 				values.forEach((fragId: number) => {
@@ -63,9 +63,15 @@ export class MeshExtension extends Autodesk.Viewing.Extension {
 				this.va3cObjectList.push(rootVac3Object);
 			});
 		});
-		await this.delay(2000);
+	}
+
+	commitFuncc(streamID: string) {
+		const client: Client = new Client(Config.BaseURL);
+		const commitObject: Va3cContainer = new Va3cContainer();
+		commitObject.va3cObjects = this.va3cObjectList;
+		console.log(commitObject);
 		client
-			.commits(streamID, this.va3cObjectList)
+			.commits(streamID, commitObject)
 			.then((response: OkResult) => {
 				console.log("Commited successfully!");
 				console.log(response);
@@ -78,6 +84,7 @@ export class MeshExtension extends Autodesk.Viewing.Extension {
 	createVac3ObjectChild(renderProxyGeometry: any, renderProxyMaterial: any, renderProxyMatrix: any): Va3cObject {
 		// Init Vac3Object
 		let vac3Object: Va3cMesh = new Va3cObject();
+		vac3Object.uuid = "HallolXegalHalloPasstauch.";
 
 		vac3Object.geometry = new Va3cGeometry();
 		vac3Object.geometry.data = new Va3cGeometryData();
@@ -100,7 +107,6 @@ export class MeshExtension extends Autodesk.Viewing.Extension {
 		vac3Object.material.opacity = renderProxyMaterial.opacity;
 		vac3Object.material.transparent = renderProxyMaterial.transparent;
 		vac3Object.material.wireframe = renderProxyMaterial.wireframe;
-
 		return vac3Object;
 	}
 
