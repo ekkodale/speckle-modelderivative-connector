@@ -9,12 +9,6 @@
     public class Va3cContainer
     {
 
-        public Metadata metadata { get; set; }
-
-        public Va3cObject @object { get; set; } 
-  
-        public List<Va3cGeometry> geometries;
-
-        public List<Va3cMaterial> materials;
+        public List<Va3cObject> Va3cObjects { get; set; }
     }
 }

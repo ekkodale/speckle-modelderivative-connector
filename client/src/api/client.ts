@@ -69,7 +69,7 @@ export class Client {
      * @param body (optional) 
      * @return Success
      */
-    commits(streamId: string | undefined, body: Va3cObject[] | undefined): Promise<OkResult> {
+    commits(streamId: string | undefined, body: Va3cContainer | undefined): Promise<OkResult> {
         let url_ = this.baseUrl + "/speckle/commits?";
         if (streamId === null)
             throw new Error("The parameter 'streamId' cannot be null.");
@@ -883,6 +883,55 @@ export interface IStream {
     commits?: Commits;
     activity?: Activity;
     object?: SpeckleObject;
+}
+
+/** three.js object class, successor of Va3cScene. The structure and properties defined here were reverse engineered from JSON files exported by the three.js and vA3C editors. */
+export class Va3cContainer implements IVa3cContainer {
+    va3cObjects?: Va3cObject[] | null;
+
+    constructor(data?: IVa3cContainer) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            if (Array.isArray(_data["va3cObjects"])) {
+                this.va3cObjects = [] as any;
+                for (let item of _data["va3cObjects"])
+                    this.va3cObjects!.push(Va3cObject.fromJS(item));
+            }
+            else {
+                this.va3cObjects = <any>null;
+            }
+        }
+    }
+
+    static fromJS(data: any): Va3cContainer {
+        data = typeof data === 'object' ? data : {};
+        let result = new Va3cContainer();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        if (Array.isArray(this.va3cObjects)) {
+            data["va3cObjects"] = [];
+            for (let item of this.va3cObjects)
+                data["va3cObjects"].push(item.toJSON());
+        }
+        return data;
+    }
+}
+
+/** three.js object class, successor of Va3cScene. The structure and properties defined here were reverse engineered from JSON files exported by the three.js and vA3C editors. */
+export interface IVa3cContainer {
+    va3cObjects?: Va3cObject[] | null;
 }
 
 export class Va3cGeometry implements IVa3cGeometry {
