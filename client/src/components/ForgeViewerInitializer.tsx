@@ -2,6 +2,7 @@ import Config from "../Config";
 //Extensions
 import { ModelUrnExtension } from "./ModelUrnExtension";
 import { MeshExtension } from "./MeshExtension";
+import { store } from "../context/store";
 
 export const initializeViewer = async (urn: string) => {
 	const authURN: string = Config.AutodeskAuthentication as string;
@@ -62,6 +63,7 @@ export const initializeViewer = async (urn: string) => {
 	const addEvents = () => {
 		viewer.addEventListener(Autodesk.Viewing.GEOMETRY_LOADED_EVENT, () => {
 			loadExtensions();
+			store.dispatch({ type: "VIEWER_INITIALIZED", payload: true });
 		});
 		viewer.addEventListener(
 			Autodesk.Viewing.EXTENSION_LOADED_EVENT,
