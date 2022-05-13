@@ -9,8 +9,8 @@ const StreamSelect = () => {
   const [streams, setStreams] = React.useState<Stream[]>();
   const [streamsLoaded, setStreamsLoaded] = useState(false);
   const viewerInitialized: any = useSelector<DashboardState>(
-		(state: any) => state.dashboardReducer.viewerInitialized
-	);
+    (state: any) => state.dashboardReducer.viewerInitialized
+  );
 
   if (!streamsLoaded) {
     client
@@ -25,30 +25,30 @@ const StreamSelect = () => {
   }
 
   return (
-    <div style={{display: "inline-block", width: "20vw"}}>
-    <div className="row">
-      <div>
-        <label
-          className="input-group-text"
-          form="inputGroupSelect01"
-          style={{ marginRight: "0" }}
-        >
-          Streams
-        </label>
+    <div style={{ display: "inline-block", width: "20vw" }}>
+      <div className="row">
+        <div>
+          <label
+            className="input-group-text"
+            form="streamID"
+            style={{ marginRight: "0" }}
+          >
+            Streams
+          </label>
+        </div>
+        <div className="col" style={{ marginLeft: "-13%" }}>
+          <select
+            className="custom-select"
+            id="streamID"
+            style={{ height: "100%" }}
+            disabled={!viewerInitialized}
+          >
+            {streams?.map((stream) => (
+              <option value={stream.id}>{stream.id}</option>
+            ))}
+          </select>
+        </div>
       </div>
-      <div className="col" style={{ marginLeft: "-13%" }}>
-        <select
-          className="custom-select"
-          id="inputGroupSelect01"
-          style={{ height: "100%" }}
-          disabled={!viewerInitialized}
-        >
-          {streams?.map((stream) => (
-            <option value={stream.id}>{stream.id}</option>
-          ))}
-        </select>
-      </div>
-    </div>
     </div>
   );
 };
