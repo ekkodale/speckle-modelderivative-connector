@@ -9,5 +9,7 @@
     public class Va3cContainer
     {
         public List<Va3cObject> Va3cObjects { get; set; } = new List<Va3cObject>();
+
+        public string StreamId { get; set; }
     }
 }

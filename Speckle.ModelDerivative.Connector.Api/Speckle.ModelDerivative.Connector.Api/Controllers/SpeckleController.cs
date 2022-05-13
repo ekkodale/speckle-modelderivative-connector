@@ -52,23 +52,23 @@ namespace Speckle.ModelDerivative.Connector.Api.Controllers
         [ProducesResponseType(typeof(BadRequestResult), 400)]
         [ProducesResponseType(typeof(NotFoundResult), 404)]
         [SwaggerOperation(OperationId = "CommitObjects", Tags = new[] { "Commit" })]
-        public async Task<IActionResult> CommitObjects(string streamId, [FromBody] Va3cContainer va3cContainer)
+        public async Task<IActionResult> CommitObjects([FromBody] Va3cContainer va3cContainer)
         {
-            if (string.IsNullOrEmpty(streamId))
+            if (string.IsNullOrEmpty(va3cContainer.StreamId))
             {
                 return BadRequest();
             }
 
-            var serverTransport = new ServerTransport(_speckleClient.Account, streamId);
+            var serverTransport = new ServerTransport(_speckleClient.Account, va3cContainer.StreamId);
 
             var commitObject = await _modelService.ConvertToSpeckle(va3cContainer.Va3cObjects);
 
             //=============================================================================
-            string objectId = await Operations.Send(commitObject, new List<ITransport>() { serverTransport }, false);
+            string objectId = await Operations.Send(commitObject, new List<ITransport>() { serverTransport }, useDefaultCache: false);
 
             var commitCreateInput = new CommitCreateInput
             {
-                streamId = streamId,
+                streamId = va3cContainer.StreamId,
                 branchName = "main",
                 objectId = objectId,
                 message = "Model sent",

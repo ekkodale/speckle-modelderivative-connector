@@ -72,8 +72,9 @@ export class MeshExtension extends Autodesk.Viewing.Extension {
 		const commitObject: Va3cContainer = new Va3cContainer();
 		commitObject.va3cObjects = this.va3cObjectList;
 		console.log(commitObject);
+		commitObject.streamId = streamID;
 		client
-			.commits(streamID, commitObject)
+			.commits(commitObject)
 			.then((response: OkResult) => {
 				console.log("Commited successfully!");
 				console.log(response);
@@ -94,7 +95,7 @@ export class MeshExtension extends Autodesk.Viewing.Extension {
 		vac3Object.material = new Va3cMaterial();
 
 		// Assign geometry
-		vac3Object.geometry.data.colors = [0,0,0]
+		vac3Object.geometry.data.colors = [];
 		vac3Object.geometry.type = "ugabuga"
 		vac3Object.geometry.uuid = "auchstring"
 		vac3Object.geometry.data.faces = renderProxyGeometry.ib;
@@ -104,10 +105,10 @@ export class MeshExtension extends Autodesk.Viewing.Extension {
 		vac3Object.material.uuid = renderProxyMaterial.uuid;
 		vac3Object.material.name = renderProxyMaterial.name;
 		vac3Object.material.type = renderProxyMaterial.type;
-		vac3Object.material.color = 0;
-		vac3Object.material.ambient = 0;
-		vac3Object.material.emissive = 0;
-		vac3Object.material.specular = 0;
+		vac3Object.material.color = 16777215;
+		vac3Object.material.ambient = 16777215;
+		vac3Object.material.emissive =16777215;
+		vac3Object.material.specular = 16777215;
 		vac3Object.material.shininess = renderProxyMaterial.shininess;
 		vac3Object.material.opacity = renderProxyMaterial.opacity;
 		vac3Object.material.transparent = renderProxyMaterial.transparent;

@@ -24,32 +24,35 @@ namespace Speckle.ModelDerivative.Connector.Api.Services
                     displayValue.vertices = child.Geometry.Data.Vertices;
                     displayValue.colors = child.Geometry.Data.Colors;
 
-                    displayValues.Add(displayValue);
                     
-
-
                     RenderMaterial renderMaterial = new();
                     renderMaterial.emissive = child.Material.Emissive;
                     renderMaterial.diffuse = child.Material.Color;
                     renderMaterial.opacity = child.Material.Opacity;
                     renderMaterial.metalness = child.Material.Shininess;
 
-                    renderMaterials.Add(renderMaterial);
+                    displayValue["@renderMaterial"] = renderMaterial;
+
+                    displayValues.Add(displayValue);
+       
 
                 }
-                speckleObj["displayValue"] = displayValues;
-                speckleObj["renderMaterial"] = renderMaterials;
+                speckleObj["@displayValue"] = displayValues;
 
                 speckleObj.applicationId = obj.Uuid;
+                speckleObj.id = obj.Uuid;
 
-                speckleObj["parameters"] = obj.UserData;
+                //speckleObj["@parameters"] = obj.UserData;
 
                 speckleObjects.Add(speckleObj);
             }
 
             rootObject["@data"] = speckleObjects;
 
-           
+            rootObject.totalChildrenCount = speckleObjects.Count;
+
+            rootObject.applicationId = "abcd";
+            rootObject.id = "abcdefg";
 
             return rootObject;
         }
