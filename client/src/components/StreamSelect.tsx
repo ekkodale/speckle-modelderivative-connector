@@ -36,7 +36,7 @@ const StreamSelect = () => {
             Streams
           </label>
         </div>
-        <div className="col" style={{ marginLeft: "-13%" }}>
+        <div className="col" style={{ marginLeft: "-43%" }}>
           <select
             className="custom-select"
             id="streamID"

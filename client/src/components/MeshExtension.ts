@@ -9,87 +9,114 @@ import {
 import Config from "../Config";
 import { MeshExtensionHelper } from "./MeshExtensionHelper";
 
+
+
 export class MeshExtension extends Autodesk.Viewing.Extension {
-  constructor(viewer: any, options: any) {
-    super(viewer, options);
-    Autodesk.Viewing.Extension.call(this, viewer, options);
-    const s1 = MeshExtensionHelper.getInstance();
-    s1.addExtension(this);
-  }
+	va3cObjectList: Va3cObject[];
 
-  load(): boolean {
-    console.log("ModelUrnExtension loaded!");
-    return true;
-  }
+	constructor(viewer: any, options: any) {
+		super(viewer, options);
+		Autodesk.Viewing.Extension.call(this, viewer, options);
+		const s1 = MeshExtensionHelper.getInstance();
+		s1.addExtension(this);
+		this.va3cObjectList = [];
+	}
 
-  unload(): boolean {
-    return true;
-  }
+	load(): boolean {
+		console.log("ModelUrnExtension loaded!");
+		return true;
+	}
 
-  commitFunc(streamID: string) {
-    const client: Client = new Client(Config.BaseURL);
-    const models: Autodesk.Viewing.Model[] = this.viewer.getAllModels();
-    const model: Autodesk.Viewing.Model = models[0];
-    let instanceTree = model.getData().instanceTree;
-    let fragIds: Array<any> = [];
-    let va3cObjectList: Va3cObject[] = [];
+	unload(): boolean {
+		return true;
+	}
 
-    instanceTree.fragList.fragments.fragId2dbId.forEach((dbId: number) => {
-      instanceTree.enumNodeFragments(dbId, function (fragId: any) {
-        fragIds.push(fragId);
-      });
-    });
+	async commitFunc(streamID: string) {
+		const client: Client = new Client(Config.BaseURL);
+		const models: Autodesk.Viewing.Model[] = this.viewer.getAllModels();
+		const model: Autodesk.Viewing.Model = models[0];
 
-    fragIds.forEach((fragId: number) => {
-      let renderProxy = this.viewer.impl.getRenderProxy(model, fragId);
-      let renderProxyGeometry = renderProxy.geometry;
-      let renderProxyMaterial = renderProxy.material;
-      let renderProxyMatrix = renderProxy.matrix;
+		let instanceTree = model.getData().instanceTree;
+		const mapping: Map<number, number[]> = new Map();
+		let fragIds: Array<any> = [];
+		let va3cObjectList: Va3cObject[] = [];
 
-      // Init Vac3Object
-      let vac3Object: Va3cObject = new Va3cObject();
+		instanceTree.fragList.fragments.fragId2dbId.forEach((dbId: number) => {
+			let tempFragIds: number[] = [];
+			instanceTree.enumNodeFragments(dbId, function (fragId: any) {
+				fragIds.push(fragId);
+				tempFragIds.push(fragId);
+			});
+			mapping.set(dbId, tempFragIds);
+		});
 
-      vac3Object.geometry = new Va3cGeometry();
-      vac3Object.geometry.data = new Va3cGeometryData();
+		mapping.forEach((values: number[], key: number) => {
+			model.getProperties(key, (result: Autodesk.Viewing.PropertyResult) => {
+				let rootVac3Object: Va3cObject = new Va3cObject();
+				rootVac3Object.uuid = result.externalId;
+				rootVac3Object.userData = {};
+				result.properties.forEach((property: Autodesk.Viewing.Property) => {
+					if (rootVac3Object.userData) {
+						rootVac3Object.userData[property.displayName] = property.displayValue;
+					}
+				});
+				rootVac3Object.children = [];
+				values.forEach((fragId: number) => {
+					let renderProxy = this.viewer.impl.getRenderProxy(model, fragId);
+					const childVacObject: Va3cObject = this.createVac3ObjectChild(renderProxy.geometry, renderProxy.material, renderProxy.matrix);
+					if (rootVac3Object.children) {
+						rootVac3Object.children.push(childVacObject);
+					}
+				});
+				this.va3cObjectList.push(rootVac3Object);
+			});
+		});
+		await this.delay(2000);
+		client
+			.commits(streamID, va3cObjectList)
+			.then((response: OkResult) => {
+				console.log("Commited successfully!");
+				console.log(response);
+			})
+			.catch((error: any) => {
+				console.log("Something went wrong with the commit: " + error);
+			});
+	}
 
-      vac3Object.material = new Va3cMaterial();
+	createVac3ObjectChild(renderProxyGeometry: any, renderProxyMaterial: any, renderProxyMatrix: any): Va3cObject {
+		// Init Vac3Object
+		let vac3Object: Va3cObject = new Va3cObject();
 
-      vac3Object.matrix = [];
+		vac3Object.geometry = new Va3cGeometry();
+		vac3Object.geometry.data = new Va3cGeometryData();
 
-      // Assign geometry
-      vac3Object.geometry.data.faces = renderProxyGeometry.ib;
-      vac3Object.geometry.data.vertices = renderProxyGeometry.vb;
+		vac3Object.material = new Va3cMaterial();
 
-      // Assign material
-      vac3Object.material.uuid = renderProxyMaterial.uuid;
-      vac3Object.material.name = renderProxyMaterial.name;
-      vac3Object.material.type = renderProxyMaterial.type;
-      vac3Object.material.color = renderProxyMaterial.color;
-      vac3Object.material.ambient = renderProxyMaterial.ambient;
-      vac3Object.material.emissive = renderProxyMaterial.emissive;
-      vac3Object.material.specular = renderProxyMaterial.specular;
-      vac3Object.material.shininess = renderProxyMaterial.shininess;
-      vac3Object.material.opacity = renderProxyMaterial.opacity;
-      vac3Object.material.transparent = renderProxyMaterial.transparent;
-      vac3Object.material.wireframe = renderProxyMaterial.wireframe;
+		vac3Object.matrix = [];
 
-      // Assign matrix
-      vac3Object.matrix = renderProxyMatrix;
+		// Assign geometry
+		vac3Object.geometry.data.faces = renderProxyGeometry.ib;
+		vac3Object.geometry.data.vertices = renderProxyGeometry.vb;
 
-      va3cObjectList.push(vac3Object);
-    });
+		// Assign material
+		vac3Object.material.uuid = renderProxyMaterial.uuid;
+		vac3Object.material.name = renderProxyMaterial.name;
+		vac3Object.material.type = renderProxyMaterial.type;
+		vac3Object.material.color = renderProxyMaterial.color;
+		vac3Object.material.ambient = renderProxyMaterial.ambient;
+		vac3Object.material.emissive = renderProxyMaterial.emissive;
+		vac3Object.material.specular = renderProxyMaterial.specular;
+		vac3Object.material.shininess = renderProxyMaterial.shininess;
+		vac3Object.material.opacity = renderProxyMaterial.opacity;
+		vac3Object.material.transparent = renderProxyMaterial.transparent;
+		vac3Object.material.wireframe = renderProxyMaterial.wireframe;
 
-    console.log("START COMMIT");
-    console.log(va3cObjectList);
+		// Assign matrix
+		vac3Object.matrix = renderProxyMatrix;
+		return vac3Object;
+	}
 
-    client
-      .commits(streamID, va3cObjectList)
-      .then((response: OkResult) => {
-        console.log("Commited successfully!");
-        console.log(response);
-      })
-      .catch((error: any) => {
-        console.log("Something went wrong with the commit: " + error);
-      });
-  }
+	private delay(ms: number) {
+		return new Promise((resolve) => setTimeout(resolve, ms));
+	}
 }
