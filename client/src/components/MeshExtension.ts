@@ -73,7 +73,7 @@ export class MeshExtension extends Autodesk.Viewing.Extension {
 		});
 		await this.delay(2000);
 		client
-			.commits(streamID, va3cObjectList)
+			.commits(streamID, this.va3cObjectList)
 			.then((response: OkResult) => {
 				console.log("Commited successfully!");
 				console.log(response);
