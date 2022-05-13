@@ -1246,7 +1246,7 @@ export class Va3cObject implements IVa3cObject {
     uuid?: string | null;
     matrix?: number[] | null;
     children?: Va3cMesh[] | null;
-    userData?: { [key: string]: string; } | null;
+    userData?: Va3cProperty[] | null;
 
     constructor(data?: IVa3cObject) {
         if (data) {
@@ -1276,12 +1276,10 @@ export class Va3cObject implements IVa3cObject {
             else {
                 this.children = <any>null;
             }
-            if (_data["userData"]) {
-                this.userData = {} as any;
-                for (let key in _data["userData"]) {
-                    if (_data["userData"].hasOwnProperty(key))
-                        (<any>this.userData)![key] = _data["userData"][key] !== undefined ? _data["userData"][key] : <any>null;
-                }
+            if (Array.isArray(_data["userData"])) {
+                this.userData = [] as any;
+                for (let item of _data["userData"])
+                    this.userData!.push(Va3cProperty.fromJS(item));
             }
             else {
                 this.userData = <any>null;
@@ -1309,12 +1307,10 @@ export class Va3cObject implements IVa3cObject {
             for (let item of this.children)
                 data["children"].push(item.toJSON());
         }
-        if (this.userData) {
-            data["userData"] = {};
-            for (let key in this.userData) {
-                if (this.userData.hasOwnProperty(key))
-                    (<any>data["userData"])[key] = this.userData[key] !== undefined ? this.userData[key] : <any>null;
-            }
+        if (Array.isArray(this.userData)) {
+            data["userData"] = [];
+            for (let item of this.userData)
+                data["userData"].push(item.toJSON());
         }
         return data;
     }
@@ -1324,7 +1320,51 @@ export interface IVa3cObject {
     uuid?: string | null;
     matrix?: number[] | null;
     children?: Va3cMesh[] | null;
-    userData?: { [key: string]: string; } | null;
+    userData?: Va3cProperty[] | null;
+}
+
+export class Va3cProperty implements IVa3cProperty {
+    name?: string | null;
+    value?: string | null;
+    type?: string | null;
+
+    constructor(data?: IVa3cProperty) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.name = _data["name"] !== undefined ? _data["name"] : <any>null;
+            this.value = _data["value"] !== undefined ? _data["value"] : <any>null;
+            this.type = _data["type"] !== undefined ? _data["type"] : <any>null;
+        }
+    }
+
+    static fromJS(data: any): Va3cProperty {
+        data = typeof data === 'object' ? data : {};
+        let result = new Va3cProperty();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["name"] = this.name !== undefined ? this.name : <any>null;
+        data["value"] = this.value !== undefined ? this.value : <any>null;
+        data["type"] = this.type !== undefined ? this.type : <any>null;
+        return data;
+    }
+}
+
+export interface IVa3cProperty {
+    name?: string | null;
+    value?: string | null;
+    type?: string | null;
 }
 
 export class ApiException extends Error {
