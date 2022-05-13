@@ -1,0 +1,38 @@
+version: "3.7"
+services:
+  #Server#
+  speckle-derivative-server:
+    image: specklederivativeserver:${SERVER_DERIVATIVE_TAG}
+    build:
+      context: ../../
+      dockerfile: Speckle.ModelDerivative.Connector.Api/Speckle.ModelDerivative.Connector.Api/Dockerfile
+    container_name: ${SERVER_DERIVATIVE_CONTAINER}
+    restart: always
+    ports:
+      - '${SERVER_DERIVATIVE_PORT}:5001'
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - Speckle:Server=${SPECKLE_SERVER}
+    networks:
+      specklederivative:
+        aliases:
+          - ${SERVER_DERIVATIVE_CONTAINER}
+  #Client
+  speckle-derivative-client:
+    image: specklederivativeclient:${CLIENT_DERIVATIVE_TAG}
+    build:
+      context: ../../
+      dockerfile: client/Dockerfile
+    container_name: ${CLIENT_DERIVATIVE_CONTAINER}
+    restart: always
+    ports:
+      - "${CLIENT_DERIVATIVE_PORT}:8080"
+    environment:
+      - REACT_APP_SERVER_URL=${SERVICEGATEWAY_URL}:${SERVICEGATEWAY_PORT}
+    networks:
+      specklederivative:
+        aliases:
+          - ${CLIENT_DERIVATIVE_CONTAINER}
+networks:
+  specklederivative:
+    name: ${NETWORK_NAME}

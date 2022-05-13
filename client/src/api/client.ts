@@ -129,7 +129,7 @@ export class Client {
 export class Activity implements IActivity {
     totalCount?: number;
     cursor?: Date;
-    items?: ActivityItem[] | undefined;
+    items?: ActivityItem[] | null;
 
     constructor(data?: IActivity) {
         if (data) {
@@ -142,12 +142,15 @@ export class Activity implements IActivity {
 
     init(_data?: any) {
         if (_data) {
-            this.totalCount = _data["totalCount"];
-            this.cursor = _data["cursor"] ? new Date(_data["cursor"].toString()) : <any>undefined;
+            this.totalCount = _data["totalCount"] !== undefined ? _data["totalCount"] : <any>null;
+            this.cursor = _data["cursor"] ? new Date(_data["cursor"].toString()) : <any>null;
             if (Array.isArray(_data["items"])) {
                 this.items = [] as any;
                 for (let item of _data["items"])
                     this.items!.push(ActivityItem.fromJS(item));
+            }
+            else {
+                this.items = <any>null;
             }
         }
     }
@@ -161,8 +164,8 @@ export class Activity implements IActivity {
 
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
-        data["totalCount"] = this.totalCount;
-        data["cursor"] = this.cursor ? this.cursor.toISOString() : <any>undefined;
+        data["totalCount"] = this.totalCount !== undefined ? this.totalCount : <any>null;
+        data["cursor"] = this.cursor ? this.cursor.toISOString() : <any>null;
         if (Array.isArray(this.items)) {
             data["items"] = [];
             for (let item of this.items)
@@ -175,18 +178,18 @@ export class Activity implements IActivity {
 export interface IActivity {
     totalCount?: number;
     cursor?: Date;
-    items?: ActivityItem[] | undefined;
+    items?: ActivityItem[] | null;
 }
 
 export class ActivityItem implements IActivityItem {
-    actionType?: string | undefined;
-    userId?: string | undefined;
-    streamId?: string | undefined;
-    resourceId?: string | undefined;
-    resourceType?: string | undefined;
-    time?: string | undefined;
+    actionType?: string | null;
+    userId?: string | null;
+    streamId?: string | null;
+    resourceId?: string | null;
+    resourceType?: string | null;
+    time?: string | null;
     info?: Info;
-    message?: string | undefined;
+    message?: string | null;
 
     constructor(data?: IActivityItem) {
         if (data) {
@@ -199,14 +202,14 @@ export class ActivityItem implements IActivityItem {
 
     init(_data?: any) {
         if (_data) {
-            this.actionType = _data["actionType"];
-            this.userId = _data["userId"];
-            this.streamId = _data["streamId"];
-            this.resourceId = _data["resourceId"];
-            this.resourceType = _data["resourceType"];
-            this.time = _data["time"];
-            this.info = _data["info"] ? Info.fromJS(_data["info"]) : <any>undefined;
-            this.message = _data["message"];
+            this.actionType = _data["actionType"] !== undefined ? _data["actionType"] : <any>null;
+            this.userId = _data["userId"] !== undefined ? _data["userId"] : <any>null;
+            this.streamId = _data["streamId"] !== undefined ? _data["streamId"] : <any>null;
+            this.resourceId = _data["resourceId"] !== undefined ? _data["resourceId"] : <any>null;
+            this.resourceType = _data["resourceType"] !== undefined ? _data["resourceType"] : <any>null;
+            this.time = _data["time"] !== undefined ? _data["time"] : <any>null;
+            this.info = _data["info"] ? Info.fromJS(_data["info"]) : <any>null;
+            this.message = _data["message"] !== undefined ? _data["message"] : <any>null;
         }
     }
 
@@ -219,27 +222,27 @@ export class ActivityItem implements IActivityItem {
 
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
-        data["actionType"] = this.actionType;
-        data["userId"] = this.userId;
-        data["streamId"] = this.streamId;
-        data["resourceId"] = this.resourceId;
-        data["resourceType"] = this.resourceType;
-        data["time"] = this.time;
-        data["info"] = this.info ? this.info.toJSON() : <any>undefined;
-        data["message"] = this.message;
+        data["actionType"] = this.actionType !== undefined ? this.actionType : <any>null;
+        data["userId"] = this.userId !== undefined ? this.userId : <any>null;
+        data["streamId"] = this.streamId !== undefined ? this.streamId : <any>null;
+        data["resourceId"] = this.resourceId !== undefined ? this.resourceId : <any>null;
+        data["resourceType"] = this.resourceType !== undefined ? this.resourceType : <any>null;
+        data["time"] = this.time !== undefined ? this.time : <any>null;
+        data["info"] = this.info ? this.info.toJSON() : <any>null;
+        data["message"] = this.message !== undefined ? this.message : <any>null;
         return data;
     }
 }
 
 export interface IActivityItem {
-    actionType?: string | undefined;
-    userId?: string | undefined;
-    streamId?: string | undefined;
-    resourceId?: string | undefined;
-    resourceType?: string | undefined;
-    time?: string | undefined;
+    actionType?: string | null;
+    userId?: string | null;
+    streamId?: string | null;
+    resourceId?: string | null;
+    resourceType?: string | null;
+    time?: string | null;
     info?: Info;
-    message?: string | undefined;
+    message?: string | null;
 }
 
 export class BadRequestResult implements IBadRequestResult {
@@ -256,7 +259,7 @@ export class BadRequestResult implements IBadRequestResult {
 
     init(_data?: any) {
         if (_data) {
-            this.statusCode = _data["statusCode"];
+            this.statusCode = _data["statusCode"] !== undefined ? _data["statusCode"] : <any>null;
         }
     }
 
@@ -269,7 +272,7 @@ export class BadRequestResult implements IBadRequestResult {
 
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
-        data["statusCode"] = this.statusCode;
+        data["statusCode"] = this.statusCode !== undefined ? this.statusCode : <any>null;
         return data;
     }
 }
@@ -279,9 +282,9 @@ export interface IBadRequestResult {
 }
 
 export class Branch implements IBranch {
-    id?: string | undefined;
-    name?: string | undefined;
-    description?: string | undefined;
+    id?: string | null;
+    name?: string | null;
+    description?: string | null;
     commits?: Commits;
 
     constructor(data?: IBranch) {
@@ -295,10 +298,10 @@ export class Branch implements IBranch {
 
     init(_data?: any) {
         if (_data) {
-            this.id = _data["id"];
-            this.name = _data["name"];
-            this.description = _data["description"];
-            this.commits = _data["commits"] ? Commits.fromJS(_data["commits"]) : <any>undefined;
+            this.id = _data["id"] !== undefined ? _data["id"] : <any>null;
+            this.name = _data["name"] !== undefined ? _data["name"] : <any>null;
+            this.description = _data["description"] !== undefined ? _data["description"] : <any>null;
+            this.commits = _data["commits"] ? Commits.fromJS(_data["commits"]) : <any>null;
         }
     }
 
@@ -311,25 +314,25 @@ export class Branch implements IBranch {
 
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
-        data["id"] = this.id;
-        data["name"] = this.name;
-        data["description"] = this.description;
-        data["commits"] = this.commits ? this.commits.toJSON() : <any>undefined;
+        data["id"] = this.id !== undefined ? this.id : <any>null;
+        data["name"] = this.name !== undefined ? this.name : <any>null;
+        data["description"] = this.description !== undefined ? this.description : <any>null;
+        data["commits"] = this.commits ? this.commits.toJSON() : <any>null;
         return data;
     }
 }
 
 export interface IBranch {
-    id?: string | undefined;
-    name?: string | undefined;
-    description?: string | undefined;
+    id?: string | null;
+    name?: string | null;
+    description?: string | null;
     commits?: Commits;
 }
 
 export class Branches implements IBranches {
     totalCount?: number;
-    cursor?: string | undefined;
-    items?: Branch[] | undefined;
+    cursor?: string | null;
+    items?: Branch[] | null;
 
     constructor(data?: IBranches) {
         if (data) {
@@ -342,12 +345,15 @@ export class Branches implements IBranches {
 
     init(_data?: any) {
         if (_data) {
-            this.totalCount = _data["totalCount"];
-            this.cursor = _data["cursor"];
+            this.totalCount = _data["totalCount"] !== undefined ? _data["totalCount"] : <any>null;
+            this.cursor = _data["cursor"] !== undefined ? _data["cursor"] : <any>null;
             if (Array.isArray(_data["items"])) {
                 this.items = [] as any;
                 for (let item of _data["items"])
                     this.items!.push(Branch.fromJS(item));
+            }
+            else {
+                this.items = <any>null;
             }
         }
     }
@@ -361,8 +367,8 @@ export class Branches implements IBranches {
 
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
-        data["totalCount"] = this.totalCount;
-        data["cursor"] = this.cursor;
+        data["totalCount"] = this.totalCount !== undefined ? this.totalCount : <any>null;
+        data["cursor"] = this.cursor !== undefined ? this.cursor : <any>null;
         if (Array.isArray(this.items)) {
             data["items"] = [];
             for (let item of this.items)
@@ -374,15 +380,15 @@ export class Branches implements IBranches {
 
 export interface IBranches {
     totalCount?: number;
-    cursor?: string | undefined;
-    items?: Branch[] | undefined;
+    cursor?: string | null;
+    items?: Branch[] | null;
 }
 
 export class Collaborator implements ICollaborator {
-    id?: string | undefined;
-    name?: string | undefined;
-    role?: string | undefined;
-    avatar?: string | undefined;
+    id?: string | null;
+    name?: string | null;
+    role?: string | null;
+    avatar?: string | null;
 
     constructor(data?: ICollaborator) {
         if (data) {
@@ -395,10 +401,10 @@ export class Collaborator implements ICollaborator {
 
     init(_data?: any) {
         if (_data) {
-            this.id = _data["id"];
-            this.name = _data["name"];
-            this.role = _data["role"];
-            this.avatar = _data["avatar"];
+            this.id = _data["id"] !== undefined ? _data["id"] : <any>null;
+            this.name = _data["name"] !== undefined ? _data["name"] : <any>null;
+            this.role = _data["role"] !== undefined ? _data["role"] : <any>null;
+            this.avatar = _data["avatar"] !== undefined ? _data["avatar"] : <any>null;
         }
     }
 
@@ -411,33 +417,33 @@ export class Collaborator implements ICollaborator {
 
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
-        data["id"] = this.id;
-        data["name"] = this.name;
-        data["role"] = this.role;
-        data["avatar"] = this.avatar;
+        data["id"] = this.id !== undefined ? this.id : <any>null;
+        data["name"] = this.name !== undefined ? this.name : <any>null;
+        data["role"] = this.role !== undefined ? this.role : <any>null;
+        data["avatar"] = this.avatar !== undefined ? this.avatar : <any>null;
         return data;
     }
 }
 
 export interface ICollaborator {
-    id?: string | undefined;
-    name?: string | undefined;
-    role?: string | undefined;
-    avatar?: string | undefined;
+    id?: string | null;
+    name?: string | null;
+    role?: string | null;
+    avatar?: string | null;
 }
 
 export class Commit implements ICommit {
-    id?: string | undefined;
-    message?: string | undefined;
-    branchName?: string | undefined;
-    authorName?: string | undefined;
-    authorId?: string | undefined;
-    authorAvatar?: string | undefined;
-    createdAt?: string | undefined;
-    sourceApplication?: string | undefined;
-    referencedObject?: string | undefined;
+    id?: string | null;
+    message?: string | null;
+    branchName?: string | null;
+    authorName?: string | null;
+    authorId?: string | null;
+    authorAvatar?: string | null;
+    createdAt?: string | null;
+    sourceApplication?: string | null;
+    referencedObject?: string | null;
     totalChildrenCount?: number;
-    parents?: string[] | undefined;
+    parents?: string[] | null;
 
     constructor(data?: ICommit) {
         if (data) {
@@ -450,20 +456,23 @@ export class Commit implements ICommit {
 
     init(_data?: any) {
         if (_data) {
-            this.id = _data["id"];
-            this.message = _data["message"];
-            this.branchName = _data["branchName"];
-            this.authorName = _data["authorName"];
-            this.authorId = _data["authorId"];
-            this.authorAvatar = _data["authorAvatar"];
-            this.createdAt = _data["createdAt"];
-            this.sourceApplication = _data["sourceApplication"];
-            this.referencedObject = _data["referencedObject"];
-            this.totalChildrenCount = _data["totalChildrenCount"];
+            this.id = _data["id"] !== undefined ? _data["id"] : <any>null;
+            this.message = _data["message"] !== undefined ? _data["message"] : <any>null;
+            this.branchName = _data["branchName"] !== undefined ? _data["branchName"] : <any>null;
+            this.authorName = _data["authorName"] !== undefined ? _data["authorName"] : <any>null;
+            this.authorId = _data["authorId"] !== undefined ? _data["authorId"] : <any>null;
+            this.authorAvatar = _data["authorAvatar"] !== undefined ? _data["authorAvatar"] : <any>null;
+            this.createdAt = _data["createdAt"] !== undefined ? _data["createdAt"] : <any>null;
+            this.sourceApplication = _data["sourceApplication"] !== undefined ? _data["sourceApplication"] : <any>null;
+            this.referencedObject = _data["referencedObject"] !== undefined ? _data["referencedObject"] : <any>null;
+            this.totalChildrenCount = _data["totalChildrenCount"] !== undefined ? _data["totalChildrenCount"] : <any>null;
             if (Array.isArray(_data["parents"])) {
                 this.parents = [] as any;
                 for (let item of _data["parents"])
                     this.parents!.push(item);
+            }
+            else {
+                this.parents = <any>null;
             }
         }
     }
@@ -477,16 +486,16 @@ export class Commit implements ICommit {
 
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
-        data["id"] = this.id;
-        data["message"] = this.message;
-        data["branchName"] = this.branchName;
-        data["authorName"] = this.authorName;
-        data["authorId"] = this.authorId;
-        data["authorAvatar"] = this.authorAvatar;
-        data["createdAt"] = this.createdAt;
-        data["sourceApplication"] = this.sourceApplication;
-        data["referencedObject"] = this.referencedObject;
-        data["totalChildrenCount"] = this.totalChildrenCount;
+        data["id"] = this.id !== undefined ? this.id : <any>null;
+        data["message"] = this.message !== undefined ? this.message : <any>null;
+        data["branchName"] = this.branchName !== undefined ? this.branchName : <any>null;
+        data["authorName"] = this.authorName !== undefined ? this.authorName : <any>null;
+        data["authorId"] = this.authorId !== undefined ? this.authorId : <any>null;
+        data["authorAvatar"] = this.authorAvatar !== undefined ? this.authorAvatar : <any>null;
+        data["createdAt"] = this.createdAt !== undefined ? this.createdAt : <any>null;
+        data["sourceApplication"] = this.sourceApplication !== undefined ? this.sourceApplication : <any>null;
+        data["referencedObject"] = this.referencedObject !== undefined ? this.referencedObject : <any>null;
+        data["totalChildrenCount"] = this.totalChildrenCount !== undefined ? this.totalChildrenCount : <any>null;
         if (Array.isArray(this.parents)) {
             data["parents"] = [];
             for (let item of this.parents)
@@ -497,23 +506,23 @@ export class Commit implements ICommit {
 }
 
 export interface ICommit {
-    id?: string | undefined;
-    message?: string | undefined;
-    branchName?: string | undefined;
-    authorName?: string | undefined;
-    authorId?: string | undefined;
-    authorAvatar?: string | undefined;
-    createdAt?: string | undefined;
-    sourceApplication?: string | undefined;
-    referencedObject?: string | undefined;
+    id?: string | null;
+    message?: string | null;
+    branchName?: string | null;
+    authorName?: string | null;
+    authorId?: string | null;
+    authorAvatar?: string | null;
+    createdAt?: string | null;
+    sourceApplication?: string | null;
+    referencedObject?: string | null;
     totalChildrenCount?: number;
-    parents?: string[] | undefined;
+    parents?: string[] | null;
 }
 
 export class Commits implements ICommits {
     totalCount?: number;
-    cursor?: string | undefined;
-    items?: Commit[] | undefined;
+    cursor?: string | null;
+    items?: Commit[] | null;
 
     constructor(data?: ICommits) {
         if (data) {
@@ -526,12 +535,15 @@ export class Commits implements ICommits {
 
     init(_data?: any) {
         if (_data) {
-            this.totalCount = _data["totalCount"];
-            this.cursor = _data["cursor"];
+            this.totalCount = _data["totalCount"] !== undefined ? _data["totalCount"] : <any>null;
+            this.cursor = _data["cursor"] !== undefined ? _data["cursor"] : <any>null;
             if (Array.isArray(_data["items"])) {
                 this.items = [] as any;
                 for (let item of _data["items"])
                     this.items!.push(Commit.fromJS(item));
+            }
+            else {
+                this.items = <any>null;
             }
         }
     }
@@ -545,8 +557,8 @@ export class Commits implements ICommits {
 
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
-        data["totalCount"] = this.totalCount;
-        data["cursor"] = this.cursor;
+        data["totalCount"] = this.totalCount !== undefined ? this.totalCount : <any>null;
+        data["cursor"] = this.cursor !== undefined ? this.cursor : <any>null;
         if (Array.isArray(this.items)) {
             data["items"] = [];
             for (let item of this.items)
@@ -558,13 +570,13 @@ export class Commits implements ICommits {
 
 export interface ICommits {
     totalCount?: number;
-    cursor?: string | undefined;
-    items?: Commit[] | undefined;
+    cursor?: string | null;
+    items?: Commit[] | null;
 }
 
 export class Info implements IInfo {
-    message?: string | undefined;
-    sourceApplication?: string | undefined;
+    message?: string | null;
+    sourceApplication?: string | null;
     commit?: InfoCommit;
 
     constructor(data?: IInfo) {
@@ -578,9 +590,9 @@ export class Info implements IInfo {
 
     init(_data?: any) {
         if (_data) {
-            this.message = _data["message"];
-            this.sourceApplication = _data["sourceApplication"];
-            this.commit = _data["commit"] ? InfoCommit.fromJS(_data["commit"]) : <any>undefined;
+            this.message = _data["message"] !== undefined ? _data["message"] : <any>null;
+            this.sourceApplication = _data["sourceApplication"] !== undefined ? _data["sourceApplication"] : <any>null;
+            this.commit = _data["commit"] ? InfoCommit.fromJS(_data["commit"]) : <any>null;
         }
     }
 
@@ -593,23 +605,23 @@ export class Info implements IInfo {
 
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
-        data["message"] = this.message;
-        data["sourceApplication"] = this.sourceApplication;
-        data["commit"] = this.commit ? this.commit.toJSON() : <any>undefined;
+        data["message"] = this.message !== undefined ? this.message : <any>null;
+        data["sourceApplication"] = this.sourceApplication !== undefined ? this.sourceApplication : <any>null;
+        data["commit"] = this.commit ? this.commit.toJSON() : <any>null;
         return data;
     }
 }
 
 export interface IInfo {
-    message?: string | undefined;
-    sourceApplication?: string | undefined;
+    message?: string | null;
+    sourceApplication?: string | null;
     commit?: InfoCommit;
 }
 
 export class InfoCommit implements IInfoCommit {
-    message?: string | undefined;
-    sourceApplication?: string | undefined;
-    branchName?: string | undefined;
+    message?: string | null;
+    sourceApplication?: string | null;
+    branchName?: string | null;
 
     constructor(data?: IInfoCommit) {
         if (data) {
@@ -622,9 +634,9 @@ export class InfoCommit implements IInfoCommit {
 
     init(_data?: any) {
         if (_data) {
-            this.message = _data["message"];
-            this.sourceApplication = _data["sourceApplication"];
-            this.branchName = _data["branchName"];
+            this.message = _data["message"] !== undefined ? _data["message"] : <any>null;
+            this.sourceApplication = _data["sourceApplication"] !== undefined ? _data["sourceApplication"] : <any>null;
+            this.branchName = _data["branchName"] !== undefined ? _data["branchName"] : <any>null;
         }
     }
 
@@ -637,17 +649,17 @@ export class InfoCommit implements IInfoCommit {
 
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
-        data["message"] = this.message;
-        data["sourceApplication"] = this.sourceApplication;
-        data["branchName"] = this.branchName;
+        data["message"] = this.message !== undefined ? this.message : <any>null;
+        data["sourceApplication"] = this.sourceApplication !== undefined ? this.sourceApplication : <any>null;
+        data["branchName"] = this.branchName !== undefined ? this.branchName : <any>null;
         return data;
     }
 }
 
 export interface IInfoCommit {
-    message?: string | undefined;
-    sourceApplication?: string | undefined;
-    branchName?: string | undefined;
+    message?: string | null;
+    sourceApplication?: string | null;
+    branchName?: string | null;
 }
 
 export class NotFoundResult implements INotFoundResult {
@@ -664,7 +676,7 @@ export class NotFoundResult implements INotFoundResult {
 
     init(_data?: any) {
         if (_data) {
-            this.statusCode = _data["statusCode"];
+            this.statusCode = _data["statusCode"] !== undefined ? _data["statusCode"] : <any>null;
         }
     }
 
@@ -677,7 +689,7 @@ export class NotFoundResult implements INotFoundResult {
 
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
-        data["statusCode"] = this.statusCode;
+        data["statusCode"] = this.statusCode !== undefined ? this.statusCode : <any>null;
         return data;
     }
 }
@@ -700,7 +712,7 @@ export class OkResult implements IOkResult {
 
     init(_data?: any) {
         if (_data) {
-            this.statusCode = _data["statusCode"];
+            this.statusCode = _data["statusCode"] !== undefined ? _data["statusCode"] : <any>null;
         }
     }
 
@@ -713,7 +725,7 @@ export class OkResult implements IOkResult {
 
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
-        data["statusCode"] = this.statusCode;
+        data["statusCode"] = this.statusCode !== undefined ? this.statusCode : <any>null;
         return data;
     }
 }
@@ -723,11 +735,11 @@ export interface IOkResult {
 }
 
 export class SpeckleObject implements ISpeckleObject {
-    id?: string | undefined;
-    speckleType?: string | undefined;
-    applicationId?: string | undefined;
+    id?: string | null;
+    speckleType?: string | null;
+    applicationId?: string | null;
     totalChildrenCount?: number;
-    createdAt?: string | undefined;
+    createdAt?: string | null;
 
     constructor(data?: ISpeckleObject) {
         if (data) {
@@ -740,11 +752,11 @@ export class SpeckleObject implements ISpeckleObject {
 
     init(_data?: any) {
         if (_data) {
-            this.id = _data["id"];
-            this.speckleType = _data["speckleType"];
-            this.applicationId = _data["applicationId"];
-            this.totalChildrenCount = _data["totalChildrenCount"];
-            this.createdAt = _data["createdAt"];
+            this.id = _data["id"] !== undefined ? _data["id"] : <any>null;
+            this.speckleType = _data["speckleType"] !== undefined ? _data["speckleType"] : <any>null;
+            this.applicationId = _data["applicationId"] !== undefined ? _data["applicationId"] : <any>null;
+            this.totalChildrenCount = _data["totalChildrenCount"] !== undefined ? _data["totalChildrenCount"] : <any>null;
+            this.createdAt = _data["createdAt"] !== undefined ? _data["createdAt"] : <any>null;
         }
     }
 
@@ -757,32 +769,32 @@ export class SpeckleObject implements ISpeckleObject {
 
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
-        data["id"] = this.id;
-        data["speckleType"] = this.speckleType;
-        data["applicationId"] = this.applicationId;
-        data["totalChildrenCount"] = this.totalChildrenCount;
-        data["createdAt"] = this.createdAt;
+        data["id"] = this.id !== undefined ? this.id : <any>null;
+        data["speckleType"] = this.speckleType !== undefined ? this.speckleType : <any>null;
+        data["applicationId"] = this.applicationId !== undefined ? this.applicationId : <any>null;
+        data["totalChildrenCount"] = this.totalChildrenCount !== undefined ? this.totalChildrenCount : <any>null;
+        data["createdAt"] = this.createdAt !== undefined ? this.createdAt : <any>null;
         return data;
     }
 }
 
 export interface ISpeckleObject {
-    id?: string | undefined;
-    speckleType?: string | undefined;
-    applicationId?: string | undefined;
+    id?: string | null;
+    speckleType?: string | null;
+    applicationId?: string | null;
     totalChildrenCount?: number;
-    createdAt?: string | undefined;
+    createdAt?: string | null;
 }
 
 export class Stream implements IStream {
-    id?: string | undefined;
-    name?: string | undefined;
-    description?: string | undefined;
+    id?: string | null;
+    name?: string | null;
+    description?: string | null;
     isPublic?: boolean;
-    role?: string | undefined;
-    createdAt?: string | undefined;
-    updatedAt?: string | undefined;
-    collaborators?: Collaborator[] | undefined;
+    role?: string | null;
+    createdAt?: string | null;
+    updatedAt?: string | null;
+    collaborators?: Collaborator[] | null;
     branches?: Branches;
     branch?: Branch;
     commit?: Commit;
@@ -801,24 +813,27 @@ export class Stream implements IStream {
 
     init(_data?: any) {
         if (_data) {
-            this.id = _data["id"];
-            this.name = _data["name"];
-            this.description = _data["description"];
-            this.isPublic = _data["isPublic"];
-            this.role = _data["role"];
-            this.createdAt = _data["createdAt"];
-            this.updatedAt = _data["updatedAt"];
+            this.id = _data["id"] !== undefined ? _data["id"] : <any>null;
+            this.name = _data["name"] !== undefined ? _data["name"] : <any>null;
+            this.description = _data["description"] !== undefined ? _data["description"] : <any>null;
+            this.isPublic = _data["isPublic"] !== undefined ? _data["isPublic"] : <any>null;
+            this.role = _data["role"] !== undefined ? _data["role"] : <any>null;
+            this.createdAt = _data["createdAt"] !== undefined ? _data["createdAt"] : <any>null;
+            this.updatedAt = _data["updatedAt"] !== undefined ? _data["updatedAt"] : <any>null;
             if (Array.isArray(_data["collaborators"])) {
                 this.collaborators = [] as any;
                 for (let item of _data["collaborators"])
                     this.collaborators!.push(Collaborator.fromJS(item));
             }
-            this.branches = _data["branches"] ? Branches.fromJS(_data["branches"]) : <any>undefined;
-            this.branch = _data["branch"] ? Branch.fromJS(_data["branch"]) : <any>undefined;
-            this.commit = _data["commit"] ? Commit.fromJS(_data["commit"]) : <any>undefined;
-            this.commits = _data["commits"] ? Commits.fromJS(_data["commits"]) : <any>undefined;
-            this.activity = _data["activity"] ? Activity.fromJS(_data["activity"]) : <any>undefined;
-            this.object = _data["object"] ? SpeckleObject.fromJS(_data["object"]) : <any>undefined;
+            else {
+                this.collaborators = <any>null;
+            }
+            this.branches = _data["branches"] ? Branches.fromJS(_data["branches"]) : <any>null;
+            this.branch = _data["branch"] ? Branch.fromJS(_data["branch"]) : <any>null;
+            this.commit = _data["commit"] ? Commit.fromJS(_data["commit"]) : <any>null;
+            this.commits = _data["commits"] ? Commits.fromJS(_data["commits"]) : <any>null;
+            this.activity = _data["activity"] ? Activity.fromJS(_data["activity"]) : <any>null;
+            this.object = _data["object"] ? SpeckleObject.fromJS(_data["object"]) : <any>null;
         }
     }
 
@@ -831,37 +846,37 @@ export class Stream implements IStream {
 
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
-        data["id"] = this.id;
-        data["name"] = this.name;
-        data["description"] = this.description;
-        data["isPublic"] = this.isPublic;
-        data["role"] = this.role;
-        data["createdAt"] = this.createdAt;
-        data["updatedAt"] = this.updatedAt;
+        data["id"] = this.id !== undefined ? this.id : <any>null;
+        data["name"] = this.name !== undefined ? this.name : <any>null;
+        data["description"] = this.description !== undefined ? this.description : <any>null;
+        data["isPublic"] = this.isPublic !== undefined ? this.isPublic : <any>null;
+        data["role"] = this.role !== undefined ? this.role : <any>null;
+        data["createdAt"] = this.createdAt !== undefined ? this.createdAt : <any>null;
+        data["updatedAt"] = this.updatedAt !== undefined ? this.updatedAt : <any>null;
         if (Array.isArray(this.collaborators)) {
             data["collaborators"] = [];
             for (let item of this.collaborators)
                 data["collaborators"].push(item.toJSON());
         }
-        data["branches"] = this.branches ? this.branches.toJSON() : <any>undefined;
-        data["branch"] = this.branch ? this.branch.toJSON() : <any>undefined;
-        data["commit"] = this.commit ? this.commit.toJSON() : <any>undefined;
-        data["commits"] = this.commits ? this.commits.toJSON() : <any>undefined;
-        data["activity"] = this.activity ? this.activity.toJSON() : <any>undefined;
-        data["object"] = this.object ? this.object.toJSON() : <any>undefined;
+        data["branches"] = this.branches ? this.branches.toJSON() : <any>null;
+        data["branch"] = this.branch ? this.branch.toJSON() : <any>null;
+        data["commit"] = this.commit ? this.commit.toJSON() : <any>null;
+        data["commits"] = this.commits ? this.commits.toJSON() : <any>null;
+        data["activity"] = this.activity ? this.activity.toJSON() : <any>null;
+        data["object"] = this.object ? this.object.toJSON() : <any>null;
         return data;
     }
 }
 
 export interface IStream {
-    id?: string | undefined;
-    name?: string | undefined;
-    description?: string | undefined;
+    id?: string | null;
+    name?: string | null;
+    description?: string | null;
     isPublic?: boolean;
-    role?: string | undefined;
-    createdAt?: string | undefined;
-    updatedAt?: string | undefined;
-    collaborators?: Collaborator[] | undefined;
+    role?: string | null;
+    createdAt?: string | null;
+    updatedAt?: string | null;
+    collaborators?: Collaborator[] | null;
     branches?: Branches;
     branch?: Branch;
     commit?: Commit;
@@ -871,10 +886,10 @@ export interface IStream {
 }
 
 export class Va3cGeometry implements IVa3cGeometry {
-    uuid?: string | undefined;
-    type?: string | undefined;
+    uuid?: string | null;
+    type?: string | null;
     data?: Va3cGeometryData;
-    materials?: Va3cMaterial[] | undefined;
+    materials?: Va3cMaterial[] | null;
 
     constructor(data?: IVa3cGeometry) {
         if (data) {
@@ -887,13 +902,16 @@ export class Va3cGeometry implements IVa3cGeometry {
 
     init(_data?: any) {
         if (_data) {
-            this.uuid = _data["uuid"];
-            this.type = _data["type"];
-            this.data = _data["data"] ? Va3cGeometryData.fromJS(_data["data"]) : <any>undefined;
+            this.uuid = _data["uuid"] !== undefined ? _data["uuid"] : <any>null;
+            this.type = _data["type"] !== undefined ? _data["type"] : <any>null;
+            this.data = _data["data"] ? Va3cGeometryData.fromJS(_data["data"]) : <any>null;
             if (Array.isArray(_data["materials"])) {
                 this.materials = [] as any;
                 for (let item of _data["materials"])
                     this.materials!.push(Va3cMaterial.fromJS(item));
+            }
+            else {
+                this.materials = <any>null;
             }
         }
     }
@@ -907,9 +925,9 @@ export class Va3cGeometry implements IVa3cGeometry {
 
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
-        data["uuid"] = this.uuid;
-        data["type"] = this.type;
-        data["data"] = this.data ? this.data.toJSON() : <any>undefined;
+        data["uuid"] = this.uuid !== undefined ? this.uuid : <any>null;
+        data["type"] = this.type !== undefined ? this.type : <any>null;
+        data["data"] = this.data ? this.data.toJSON() : <any>null;
         if (Array.isArray(this.materials)) {
             data["materials"] = [];
             for (let item of this.materials)
@@ -920,18 +938,18 @@ export class Va3cGeometry implements IVa3cGeometry {
 }
 
 export interface IVa3cGeometry {
-    uuid?: string | undefined;
-    type?: string | undefined;
+    uuid?: string | null;
+    type?: string | null;
     data?: Va3cGeometryData;
-    materials?: Va3cMaterial[] | undefined;
+    materials?: Va3cMaterial[] | null;
 }
 
 export class Va3cGeometryData implements IVa3cGeometryData {
-    vertices?: number[] | undefined;
-    normals?: number[] | undefined;
-    colors?: number[] | undefined;
-    uvs?: number[] | undefined;
-    faces?: number[] | undefined;
+    vertices?: number[] | null;
+    normals?: number[] | null;
+    colors?: number[] | null;
+    uvs?: number[] | null;
+    faces?: number[] | null;
     scale?: number;
     visible?: boolean;
     castShadow?: boolean;
@@ -954,31 +972,46 @@ export class Va3cGeometryData implements IVa3cGeometryData {
                 for (let item of _data["vertices"])
                     this.vertices!.push(item);
             }
+            else {
+                this.vertices = <any>null;
+            }
             if (Array.isArray(_data["normals"])) {
                 this.normals = [] as any;
                 for (let item of _data["normals"])
                     this.normals!.push(item);
+            }
+            else {
+                this.normals = <any>null;
             }
             if (Array.isArray(_data["colors"])) {
                 this.colors = [] as any;
                 for (let item of _data["colors"])
                     this.colors!.push(item);
             }
+            else {
+                this.colors = <any>null;
+            }
             if (Array.isArray(_data["uvs"])) {
                 this.uvs = [] as any;
                 for (let item of _data["uvs"])
                     this.uvs!.push(item);
+            }
+            else {
+                this.uvs = <any>null;
             }
             if (Array.isArray(_data["faces"])) {
                 this.faces = [] as any;
                 for (let item of _data["faces"])
                     this.faces!.push(item);
             }
-            this.scale = _data["scale"];
-            this.visible = _data["visible"];
-            this.castShadow = _data["castShadow"];
-            this.receiveShadow = _data["receiveShadow"];
-            this.doubleSided = _data["doubleSided"];
+            else {
+                this.faces = <any>null;
+            }
+            this.scale = _data["scale"] !== undefined ? _data["scale"] : <any>null;
+            this.visible = _data["visible"] !== undefined ? _data["visible"] : <any>null;
+            this.castShadow = _data["castShadow"] !== undefined ? _data["castShadow"] : <any>null;
+            this.receiveShadow = _data["receiveShadow"] !== undefined ? _data["receiveShadow"] : <any>null;
+            this.doubleSided = _data["doubleSided"] !== undefined ? _data["doubleSided"] : <any>null;
         }
     }
 
@@ -1016,21 +1049,21 @@ export class Va3cGeometryData implements IVa3cGeometryData {
             for (let item of this.faces)
                 data["faces"].push(item);
         }
-        data["scale"] = this.scale;
-        data["visible"] = this.visible;
-        data["castShadow"] = this.castShadow;
-        data["receiveShadow"] = this.receiveShadow;
-        data["doubleSided"] = this.doubleSided;
+        data["scale"] = this.scale !== undefined ? this.scale : <any>null;
+        data["visible"] = this.visible !== undefined ? this.visible : <any>null;
+        data["castShadow"] = this.castShadow !== undefined ? this.castShadow : <any>null;
+        data["receiveShadow"] = this.receiveShadow !== undefined ? this.receiveShadow : <any>null;
+        data["doubleSided"] = this.doubleSided !== undefined ? this.doubleSided : <any>null;
         return data;
     }
 }
 
 export interface IVa3cGeometryData {
-    vertices?: number[] | undefined;
-    normals?: number[] | undefined;
-    colors?: number[] | undefined;
-    uvs?: number[] | undefined;
-    faces?: number[] | undefined;
+    vertices?: number[] | null;
+    normals?: number[] | null;
+    colors?: number[] | null;
+    uvs?: number[] | null;
+    faces?: number[] | null;
     scale?: number;
     visible?: boolean;
     castShadow?: boolean;
@@ -1040,9 +1073,9 @@ export interface IVa3cGeometryData {
 
 /** Based on MeshPhongMaterial obtained by exporting a cube from the three.js editor. */
 export class Va3cMaterial implements IVa3cMaterial {
-    uuid?: string | undefined;
-    name?: string | undefined;
-    type?: string | undefined;
+    uuid?: string | null;
+    name?: string | null;
+    type?: string | null;
     color?: number;
     ambient?: number;
     emissive?: number;
@@ -1063,17 +1096,17 @@ export class Va3cMaterial implements IVa3cMaterial {
 
     init(_data?: any) {
         if (_data) {
-            this.uuid = _data["uuid"];
-            this.name = _data["name"];
-            this.type = _data["type"];
-            this.color = _data["color"];
-            this.ambient = _data["ambient"];
-            this.emissive = _data["emissive"];
-            this.specular = _data["specular"];
-            this.shininess = _data["shininess"];
-            this.opacity = _data["opacity"];
-            this.transparent = _data["transparent"];
-            this.wireframe = _data["wireframe"];
+            this.uuid = _data["uuid"] !== undefined ? _data["uuid"] : <any>null;
+            this.name = _data["name"] !== undefined ? _data["name"] : <any>null;
+            this.type = _data["type"] !== undefined ? _data["type"] : <any>null;
+            this.color = _data["color"] !== undefined ? _data["color"] : <any>null;
+            this.ambient = _data["ambient"] !== undefined ? _data["ambient"] : <any>null;
+            this.emissive = _data["emissive"] !== undefined ? _data["emissive"] : <any>null;
+            this.specular = _data["specular"] !== undefined ? _data["specular"] : <any>null;
+            this.shininess = _data["shininess"] !== undefined ? _data["shininess"] : <any>null;
+            this.opacity = _data["opacity"] !== undefined ? _data["opacity"] : <any>null;
+            this.transparent = _data["transparent"] !== undefined ? _data["transparent"] : <any>null;
+            this.wireframe = _data["wireframe"] !== undefined ? _data["wireframe"] : <any>null;
         }
     }
 
@@ -1086,26 +1119,26 @@ export class Va3cMaterial implements IVa3cMaterial {
 
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
-        data["uuid"] = this.uuid;
-        data["name"] = this.name;
-        data["type"] = this.type;
-        data["color"] = this.color;
-        data["ambient"] = this.ambient;
-        data["emissive"] = this.emissive;
-        data["specular"] = this.specular;
-        data["shininess"] = this.shininess;
-        data["opacity"] = this.opacity;
-        data["transparent"] = this.transparent;
-        data["wireframe"] = this.wireframe;
+        data["uuid"] = this.uuid !== undefined ? this.uuid : <any>null;
+        data["name"] = this.name !== undefined ? this.name : <any>null;
+        data["type"] = this.type !== undefined ? this.type : <any>null;
+        data["color"] = this.color !== undefined ? this.color : <any>null;
+        data["ambient"] = this.ambient !== undefined ? this.ambient : <any>null;
+        data["emissive"] = this.emissive !== undefined ? this.emissive : <any>null;
+        data["specular"] = this.specular !== undefined ? this.specular : <any>null;
+        data["shininess"] = this.shininess !== undefined ? this.shininess : <any>null;
+        data["opacity"] = this.opacity !== undefined ? this.opacity : <any>null;
+        data["transparent"] = this.transparent !== undefined ? this.transparent : <any>null;
+        data["wireframe"] = this.wireframe !== undefined ? this.wireframe : <any>null;
         return data;
     }
 }
 
 /** Based on MeshPhongMaterial obtained by exporting a cube from the three.js editor. */
 export interface IVa3cMaterial {
-    uuid?: string | undefined;
-    name?: string | undefined;
-    type?: string | undefined;
+    uuid?: string | null;
+    name?: string | null;
+    type?: string | null;
     color?: number;
     ambient?: number;
     emissive?: number;
@@ -1117,14 +1150,14 @@ export interface IVa3cMaterial {
 }
 
 export class Va3cObject implements IVa3cObject {
-    uuid?: string | undefined;
-    name?: string | undefined;
-    type?: string | undefined;
-    matrix?: number[] | undefined;
-    children?: Va3cObject[] | undefined;
+    uuid?: string | null;
+    name?: string | null;
+    type?: string | null;
+    matrix?: number[] | null;
+    children?: Va3cObject[] | null;
     geometry?: Va3cGeometry;
     material?: Va3cMaterial;
-    userData?: { [key: string]: string; } | undefined;
+    userData?: { [key: string]: string; } | null;
 
     constructor(data?: IVa3cObject) {
         if (data) {
@@ -1137,27 +1170,36 @@ export class Va3cObject implements IVa3cObject {
 
     init(_data?: any) {
         if (_data) {
-            this.uuid = _data["uuid"];
-            this.name = _data["name"];
-            this.type = _data["type"];
+            this.uuid = _data["uuid"] !== undefined ? _data["uuid"] : <any>null;
+            this.name = _data["name"] !== undefined ? _data["name"] : <any>null;
+            this.type = _data["type"] !== undefined ? _data["type"] : <any>null;
             if (Array.isArray(_data["matrix"])) {
                 this.matrix = [] as any;
                 for (let item of _data["matrix"])
                     this.matrix!.push(item);
+            }
+            else {
+                this.matrix = <any>null;
             }
             if (Array.isArray(_data["children"])) {
                 this.children = [] as any;
                 for (let item of _data["children"])
                     this.children!.push(Va3cObject.fromJS(item));
             }
-            this.geometry = _data["geometry"] ? Va3cGeometry.fromJS(_data["geometry"]) : <any>undefined;
-            this.material = _data["material"] ? Va3cMaterial.fromJS(_data["material"]) : <any>undefined;
+            else {
+                this.children = <any>null;
+            }
+            this.geometry = _data["geometry"] ? Va3cGeometry.fromJS(_data["geometry"]) : <any>null;
+            this.material = _data["material"] ? Va3cMaterial.fromJS(_data["material"]) : <any>null;
             if (_data["userData"]) {
                 this.userData = {} as any;
                 for (let key in _data["userData"]) {
                     if (_data["userData"].hasOwnProperty(key))
-                        (<any>this.userData)![key] = _data["userData"][key];
+                        (<any>this.userData)![key] = _data["userData"][key] !== undefined ? _data["userData"][key] : <any>null;
                 }
+            }
+            else {
+                this.userData = <any>null;
             }
         }
     }
@@ -1171,9 +1213,9 @@ export class Va3cObject implements IVa3cObject {
 
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
-        data["uuid"] = this.uuid;
-        data["name"] = this.name;
-        data["type"] = this.type;
+        data["uuid"] = this.uuid !== undefined ? this.uuid : <any>null;
+        data["name"] = this.name !== undefined ? this.name : <any>null;
+        data["type"] = this.type !== undefined ? this.type : <any>null;
         if (Array.isArray(this.matrix)) {
             data["matrix"] = [];
             for (let item of this.matrix)
@@ -1184,13 +1226,13 @@ export class Va3cObject implements IVa3cObject {
             for (let item of this.children)
                 data["children"].push(item.toJSON());
         }
-        data["geometry"] = this.geometry ? this.geometry.toJSON() : <any>undefined;
-        data["material"] = this.material ? this.material.toJSON() : <any>undefined;
+        data["geometry"] = this.geometry ? this.geometry.toJSON() : <any>null;
+        data["material"] = this.material ? this.material.toJSON() : <any>null;
         if (this.userData) {
             data["userData"] = {};
             for (let key in this.userData) {
                 if (this.userData.hasOwnProperty(key))
-                    (<any>data["userData"])[key] = this.userData[key];
+                    (<any>data["userData"])[key] = this.userData[key] !== undefined ? this.userData[key] : <any>null;
             }
         }
         return data;
@@ -1198,14 +1240,14 @@ export class Va3cObject implements IVa3cObject {
 }
 
 export interface IVa3cObject {
-    uuid?: string | undefined;
-    name?: string | undefined;
-    type?: string | undefined;
-    matrix?: number[] | undefined;
-    children?: Va3cObject[] | undefined;
+    uuid?: string | null;
+    name?: string | null;
+    type?: string | null;
+    matrix?: number[] | null;
+    children?: Va3cObject[] | null;
     geometry?: Va3cGeometry;
     material?: Va3cMaterial;
-    userData?: { [key: string]: string; } | undefined;
+    userData?: { [key: string]: string; } | null;
 }
 
 export class ApiException extends Error {
