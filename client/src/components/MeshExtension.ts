@@ -46,16 +46,18 @@ export class MeshExtension extends Autodesk.Viewing.Extension {
 				let rootVac3Object: Va3cObject = new Va3cObject();
 				rootVac3Object.uuid = result.externalId;
 				rootVac3Object.userData = [];
+				rootVac3Object.matrix = []
 				result.properties.forEach((property: Autodesk.Viewing.Property) => {
 					let vacProperty: Va3cProperty = new Va3cProperty();
 					vacProperty.name = property.displayName;
-					vacProperty.value = property.displayValue;
+					vacProperty.value = String(property.displayValue);
+					vacProperty.type = "TYPE"
 					rootVac3Object.userData?.push(vacProperty);
 				});
 				rootVac3Object.children = [];
 				values.forEach((fragId: number) => {
 					let renderProxy = this.viewer.impl.getRenderProxy(model, fragId);
-					const childVacObject: Va3cObject = this.createVac3ObjectChild(renderProxy.geometry, renderProxy.material, renderProxy.matrix);
+					const childVacObject: Va3cMesh = this.createVac3ObjectChild(renderProxy.geometry, renderProxy.material, renderProxy.matrix);
 					if (rootVac3Object.children) {
 						rootVac3Object.children.push(childVacObject);
 					}
@@ -81,9 +83,9 @@ export class MeshExtension extends Autodesk.Viewing.Extension {
 			});
 	}
 
-	createVac3ObjectChild(renderProxyGeometry: any, renderProxyMaterial: any, renderProxyMatrix: any): Va3cObject {
+	createVac3ObjectChild(renderProxyGeometry: any, renderProxyMaterial: any, renderProxyMatrix: any): Va3cMesh {
 		// Init Vac3Object
-		let vac3Object: Va3cMesh = new Va3cObject();
+		let vac3Object: Va3cMesh = new Va3cMesh();
 		vac3Object.uuid = "HallolXegalHalloPasstauch.";
 
 		vac3Object.geometry = new Va3cGeometry();
@@ -92,6 +94,9 @@ export class MeshExtension extends Autodesk.Viewing.Extension {
 		vac3Object.material = new Va3cMaterial();
 
 		// Assign geometry
+		vac3Object.geometry.data.colors = [0,0,0]
+		vac3Object.geometry.type = "ugabuga"
+		vac3Object.geometry.uuid = "auchstring"
 		vac3Object.geometry.data.faces = renderProxyGeometry.ib;
 		vac3Object.geometry.data.vertices = renderProxyGeometry.vb;
 
@@ -99,10 +104,10 @@ export class MeshExtension extends Autodesk.Viewing.Extension {
 		vac3Object.material.uuid = renderProxyMaterial.uuid;
 		vac3Object.material.name = renderProxyMaterial.name;
 		vac3Object.material.type = renderProxyMaterial.type;
-		vac3Object.material.color = renderProxyMaterial.color;
-		vac3Object.material.ambient = renderProxyMaterial.ambient;
-		vac3Object.material.emissive = renderProxyMaterial.emissive;
-		vac3Object.material.specular = renderProxyMaterial.specular;
+		vac3Object.material.color = 0;
+		vac3Object.material.ambient = 0;
+		vac3Object.material.emissive = 0;
+		vac3Object.material.specular = 0;
 		vac3Object.material.shininess = renderProxyMaterial.shininess;
 		vac3Object.material.opacity = renderProxyMaterial.opacity;
 		vac3Object.material.transparent = renderProxyMaterial.transparent;
