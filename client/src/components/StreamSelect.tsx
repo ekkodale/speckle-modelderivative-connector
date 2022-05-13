@@ -44,7 +44,7 @@ const StreamSelect = () => {
             disabled={!viewerInitialized}
           >
             {streams?.map((stream) => (
-              <option value={stream.id}>{stream.id}</option>
+              <option value={stream.id!}>{stream.id}</option>
             ))}
           </select>
         </div>
