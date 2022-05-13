@@ -7,6 +7,7 @@ using System.Reflection;
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
+builder.Services.AddMvc();
 // ------------------------------------------------------------------------------------
 //  Configure swagger
 // ------------------------------------------------------------------------------------
@@ -33,6 +34,8 @@ builder.Configuration
          .AddEnvironmentVariables();
 
 builder.Services.AddRouting(options => options.LowercaseUrls = true);
+
+
 
 // ------------------------------------------------------------------------------------
 //  Configure speckle.
