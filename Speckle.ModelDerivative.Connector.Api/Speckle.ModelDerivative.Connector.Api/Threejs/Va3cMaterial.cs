@@ -7,17 +7,17 @@
         /// </summary>
         public class Va3cMaterial
         {
-            public string uuid { get; set; }
-            public string name { get; set; }
-            public string type { get; set; } // MeshPhongMaterial
-            public int color { get; set; } // 16777215
-            public int ambient { get; set; } //16777215
-            public int emissive { get; set; } // 1
-            public int specular { get; set; } //1118481
-            public int shininess { get; set; } // 30
-            public double opacity { get; set; } // 1
-            public bool transparent { get; set; } // false
-            public bool wireframe { get; set; } // false
+            public string Uuid { get; set; }
+            public string Name { get; set; }
+            public string Type { get; set; } // MeshPhongMaterial
+            public int Color { get; set; } // 16777215
+            public int Ambient { get; set; } //16777215
+            public int Emissive { get; set; } // 1
+            public int Specular { get; set; } //1118481
+            public int Shininess { get; set; } // 30
+            public double Opacity { get; set; } // 1
+            public bool Transparent { get; set; } // false
+            public bool Wireframe { get; set; } // false
         }
     }
 

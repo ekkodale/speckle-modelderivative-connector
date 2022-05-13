@@ -14,27 +14,35 @@ namespace Speckle.ModelDerivative.Connector.Api.Services
             foreach(var obj in threeObjects)
             {
                 Base speckleObj =  new ();
-                
-                Objects.Geometry.Mesh displayValue = new ();
+                List <Objects.Geometry.Mesh> displayValues  = new List<Objects.Geometry.Mesh> ();
+                List<RenderMaterial> renderMaterials = new List<Objects.Other.RenderMaterial> ();
+                foreach (var child in obj.Children)
+                {
+                    Objects.Geometry.Mesh displayValue = new();
 
-                displayValue.faces = obj.Geometry.Data.Faces;
-                displayValue.vertices = obj.Geometry.Data.Vertices;
-                displayValue.colors = obj.Geometry.Data.Colors;
-                
-                speckleObj["displayValue"] = displayValue;
+                    displayValue.faces = child.Geometry.Data.Faces;
+                    displayValue.vertices = child.Geometry.Data.Vertices;
+                    displayValue.colors = child.Geometry.Data.Colors;
+
+                    displayValues.Add(displayValue);
+                    
 
 
-                RenderMaterial renderMaterial = new ();
-                renderMaterial.emissive = obj.Material.emissive;
-                renderMaterial.diffuse = obj.Material.color;
-                renderMaterial.opacity = obj.Material.opacity;
-                renderMaterial.metalness = obj.Material.shininess;
-                
-                speckleObj["renderMaterial"] = renderMaterial;
+                    RenderMaterial renderMaterial = new();
+                    renderMaterial.emissive = child.Material.Emissive;
+                    renderMaterial.diffuse = child.Material.Color;
+                    renderMaterial.opacity = child.Material.Opacity;
+                    renderMaterial.metalness = child.Material.Shininess;
+
+                    renderMaterials.Add(renderMaterial);
+
+                }
+                speckleObj["displayValue"] = displayValues;
+                speckleObj["renderMaterial"] = renderMaterials;
 
                 speckleObj.applicationId = obj.Uuid;
 
-                speckleObj["parameters"] = new Dictionary<string, string>();
+                speckleObj["parameters"] = obj.UserData;
 
                 speckleObjects.Add(speckleObj);
             }
