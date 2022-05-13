@@ -8,7 +8,6 @@
     /// </summary>
     public class Va3cContainer
     {
-
-        public List<Va3cObject> Va3cObjects { get; set; }
+        public List<Va3cObject> Va3cObjects { get; set; } = new List<Va3cObject>();
     }
 }
