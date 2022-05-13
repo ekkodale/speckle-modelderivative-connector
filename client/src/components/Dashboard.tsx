@@ -74,7 +74,7 @@ export const Dashboard = () => {
             <button
               className="btn btn-outline-primary waves-effect"
               type="button"
-              style={{ display: "inline-block", width: "6vw" }}
+              style={{ display: "inline-block", width: "8vw", height: "4vh" }}
               onClick={() => commitFunc()}
               disabled={!viewerInitialized}
             >
