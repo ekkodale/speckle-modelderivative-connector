@@ -1,15 +1,7 @@
-import {
-  Client,
-  OkResult,
-  Va3cGeometry,
-  Va3cGeometryData,
-  Va3cMaterial,
-  Va3cObject,
-} from "../api/client";
+import {Va3cMesh} from "./../api/client";
+import {Client, OkResult, Va3cGeometry, Va3cGeometryData, Va3cMaterial, Va3cObject} from "../api/client";
 import Config from "../Config";
-import { MeshExtensionHelper } from "./MeshExtensionHelper";
-
-
+import {MeshExtensionHelper} from "./MeshExtensionHelper";
 
 export class MeshExtension extends Autodesk.Viewing.Extension {
 	va3cObjectList: Va3cObject[];
@@ -85,14 +77,12 @@ export class MeshExtension extends Autodesk.Viewing.Extension {
 
 	createVac3ObjectChild(renderProxyGeometry: any, renderProxyMaterial: any, renderProxyMatrix: any): Va3cObject {
 		// Init Vac3Object
-		let vac3Object: Va3cObject = new Va3cObject();
+		let vac3Object: Va3cMesh = new Va3cObject();
 
 		vac3Object.geometry = new Va3cGeometry();
 		vac3Object.geometry.data = new Va3cGeometryData();
 
 		vac3Object.material = new Va3cMaterial();
-
-		vac3Object.matrix = [];
 
 		// Assign geometry
 		vac3Object.geometry.data.faces = renderProxyGeometry.ib;
@@ -111,8 +101,6 @@ export class MeshExtension extends Autodesk.Viewing.Extension {
 		vac3Object.material.transparent = renderProxyMaterial.transparent;
 		vac3Object.material.wireframe = renderProxyMaterial.wireframe;
 
-		// Assign matrix
-		vac3Object.matrix = renderProxyMatrix;
 		return vac3Object;
 	}
 
