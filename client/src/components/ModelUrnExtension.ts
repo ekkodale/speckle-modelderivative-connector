@@ -1,4 +1,3 @@
-import {ShowcaseModelSingleton} from "./ShowcaseModelSingleton";
 import {ModelUrnExtensionHelper} from "./ModelUrnExtensionHelper";
 
 export class ModelUrnExtension extends Autodesk.Viewing.Extension {

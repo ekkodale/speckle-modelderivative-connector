@@ -1,6 +1,7 @@
 import Config from "../Config";
 //Extensions
 import { ModelUrnExtension } from "./ModelUrnExtension";
+import { MeshExtension } from "./MeshExtension";
 
 export const initializeViewer = async (urn: string) => {
 	const authURN: string = Config.AutodeskAuthentication as string;
@@ -83,9 +84,14 @@ export const initializeViewer = async (urn: string) => {
 			"ModelUrnExtension",
 			ModelUrnExtension
 		);
+		Autodesk.Viewing.theExtensionManager.registerExtension(
+			"MeshExtension",
+			MeshExtension
+		);
 	};
 
 	const loadExtensions = () => {
 		viewer.loadExtension("ModelUrnExtension");
+		viewer.loadExtension("MeshExtension");
 	};
 };

@@ -1,0 +1,21 @@
+import {MeshExtension} from "./MeshExtension";
+
+export class MeshExtensionHelper {
+	private static instance: MeshExtensionHelper;
+	extension: MeshExtension | undefined;
+
+	static getInstance(): MeshExtensionHelper {
+		if (!MeshExtensionHelper.instance) {
+			MeshExtensionHelper.instance = new MeshExtensionHelper();
+		}
+		return MeshExtensionHelper.instance;
+	}
+
+	addExtension(extension: MeshExtension) {
+		this.extension = extension;
+	}
+
+	testFunc() {
+		this.extension?.testFunc();
+	}
+}
