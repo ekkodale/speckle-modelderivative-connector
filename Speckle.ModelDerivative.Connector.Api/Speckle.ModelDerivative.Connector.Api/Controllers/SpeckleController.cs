@@ -52,7 +52,7 @@ namespace Speckle.ModelDerivative.Connector.Api.Controllers
         [ProducesResponseType(typeof(BadRequestResult), 400)]
         [ProducesResponseType(typeof(NotFoundResult), 404)]
         [SwaggerOperation(OperationId = "CommitObjects", Tags = new[] { "Commit" })]
-        public async Task<IActionResult> CommitObjects(string streamId, [FromBody] List<Va3cObject> va3cObjects)
+        public async Task<IActionResult> CommitObjects(string streamId, [FromBody] Va3cContainer va3cContainer)
         {
             if (string.IsNullOrEmpty(streamId))
             {
@@ -61,7 +61,7 @@ namespace Speckle.ModelDerivative.Connector.Api.Controllers
 
             var serverTransport = new ServerTransport(_speckleClient.Account, streamId);
 
-            var commitObject = await _modelService.ConvertToSpeckle(va3cObjects);
+            var commitObject = await _modelService.ConvertToSpeckle(va3cContainer.Va3cObjects);
 
             //=============================================================================
             string objectId = await Operations.Send(commitObject, new List<ITransport>() { serverTransport }, false);
@@ -73,7 +73,7 @@ namespace Speckle.ModelDerivative.Connector.Api.Controllers
                 objectId = objectId,
                 message = "Model sent",
                 sourceApplication = "Forge",
-                totalChildrenCount = va3cObjects.Count
+                totalChildrenCount = va3cContainer.Va3cObjects.Count
             };
 
             string commitId = await _speckleClient.CommitCreate(commitCreateInput);
