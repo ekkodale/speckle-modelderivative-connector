@@ -1,4 +1,4 @@
-import {Va3cMesh} from "./../api/client";
+import {Va3cContainer, Va3cMesh, Va3cProperty} from "./../api/client";
 import {Client, OkResult, Va3cGeometry, Va3cGeometryData, Va3cMaterial, Va3cObject} from "../api/client";
 import Config from "../Config";
 import {MeshExtensionHelper} from "./MeshExtensionHelper";
@@ -24,7 +24,6 @@ export class MeshExtension extends Autodesk.Viewing.Extension {
 	}
 
 	async commitFunc(streamID: string) {
-		const client: Client = new Client(Config.BaseURL);
 		const models: Autodesk.Viewing.Model[] = this.viewer.getAllModels();
 		const model: Autodesk.Viewing.Model = models[0];
 
@@ -46,16 +45,19 @@ export class MeshExtension extends Autodesk.Viewing.Extension {
 			model.getProperties(key, (result: Autodesk.Viewing.PropertyResult) => {
 				let rootVac3Object: Va3cObject = new Va3cObject();
 				rootVac3Object.uuid = result.externalId;
-				rootVac3Object.userData = {};
+				rootVac3Object.userData = [];
+				rootVac3Object.matrix = []
 				result.properties.forEach((property: Autodesk.Viewing.Property) => {
-					if (rootVac3Object.userData) {
-						rootVac3Object.userData[property.displayName] = property.displayValue;
-					}
+					let vacProperty: Va3cProperty = new Va3cProperty();
+					vacProperty.name = property.displayName;
+					vacProperty.value = String(property.displayValue);
+					vacProperty.type = "TYPE"
+					rootVac3Object.userData?.push(vacProperty);
 				});
 				rootVac3Object.children = [];
 				values.forEach((fragId: number) => {
 					let renderProxy = this.viewer.impl.getRenderProxy(model, fragId);
-					const childVacObject: Va3cObject = this.createVac3ObjectChild(renderProxy.geometry, renderProxy.material, renderProxy.matrix);
+					const childVacObject: Va3cMesh = this.createVac3ObjectChild(renderProxy.geometry, renderProxy.material, renderProxy.matrix);
 					if (rootVac3Object.children) {
 						rootVac3Object.children.push(childVacObject);
 					}
@@ -63,9 +65,15 @@ export class MeshExtension extends Autodesk.Viewing.Extension {
 				this.va3cObjectList.push(rootVac3Object);
 			});
 		});
-		await this.delay(2000);
+	}
+
+	commitFuncc(streamID: string) {
+		const client: Client = new Client(Config.BaseURL);
+		const commitObject: Va3cContainer = new Va3cContainer();
+		commitObject.va3cObjects = this.va3cObjectList;
+		console.log(commitObject);
 		client
-			.commits(streamID, this.va3cObjectList)
+			.commits(streamID, commitObject)
 			.then((response: OkResult) => {
 				console.log("Commited successfully!");
 				console.log(response);
@@ -75,9 +83,10 @@ export class MeshExtension extends Autodesk.Viewing.Extension {
 			});
 	}
 
-	createVac3ObjectChild(renderProxyGeometry: any, renderProxyMaterial: any, renderProxyMatrix: any): Va3cObject {
+	createVac3ObjectChild(renderProxyGeometry: any, renderProxyMaterial: any, renderProxyMatrix: any): Va3cMesh {
 		// Init Vac3Object
-		let vac3Object: Va3cMesh = new Va3cObject();
+		let vac3Object: Va3cMesh = new Va3cMesh();
+		vac3Object.uuid = "HallolXegalHalloPasstauch.";
 
 		vac3Object.geometry = new Va3cGeometry();
 		vac3Object.geometry.data = new Va3cGeometryData();
@@ -85,6 +94,9 @@ export class MeshExtension extends Autodesk.Viewing.Extension {
 		vac3Object.material = new Va3cMaterial();
 
 		// Assign geometry
+		vac3Object.geometry.data.colors = [0,0,0]
+		vac3Object.geometry.type = "ugabuga"
+		vac3Object.geometry.uuid = "auchstring"
 		vac3Object.geometry.data.faces = renderProxyGeometry.ib;
 		vac3Object.geometry.data.vertices = renderProxyGeometry.vb;
 
@@ -92,15 +104,14 @@ export class MeshExtension extends Autodesk.Viewing.Extension {
 		vac3Object.material.uuid = renderProxyMaterial.uuid;
 		vac3Object.material.name = renderProxyMaterial.name;
 		vac3Object.material.type = renderProxyMaterial.type;
-		vac3Object.material.color = renderProxyMaterial.color;
-		vac3Object.material.ambient = renderProxyMaterial.ambient;
-		vac3Object.material.emissive = renderProxyMaterial.emissive;
-		vac3Object.material.specular = renderProxyMaterial.specular;
+		vac3Object.material.color = 0;
+		vac3Object.material.ambient = 0;
+		vac3Object.material.emissive = 0;
+		vac3Object.material.specular = 0;
 		vac3Object.material.shininess = renderProxyMaterial.shininess;
 		vac3Object.material.opacity = renderProxyMaterial.opacity;
 		vac3Object.material.transparent = renderProxyMaterial.transparent;
 		vac3Object.material.wireframe = renderProxyMaterial.wireframe;
-
 		return vac3Object;
 	}
 
