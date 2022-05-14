@@ -4,7 +4,13 @@ This project was bootstrapped with [Create React App](https://github.com/faceboo
 
 ## Available Scripts
 
-In the project directory, you can run:
+Change to src subfolder in the commandline
+
+To make all ready for start, run:
+
+### `npm install`
+
+In the project src directory, you can run:
 
 ### `npm start`
 

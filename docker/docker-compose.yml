@@ -4,7 +4,7 @@ services:
   speckle-derivative-server:
     image: specklederivativeserver:${SERVER_DERIVATIVE_TAG}
     build:
-      context: ../../
+      context: ../
       dockerfile: Speckle.ModelDerivative.Connector.Api/Speckle.ModelDerivative.Connector.Api/Dockerfile
     container_name: ${SERVER_DERIVATIVE_CONTAINER}
     restart: always
@@ -21,7 +21,7 @@ services:
   speckle-derivative-client:
     image: specklederivativeclient:${CLIENT_DERIVATIVE_TAG}
     build:
-      context: ../../
+      context: ../
       dockerfile: client/Dockerfile
     container_name: ${CLIENT_DERIVATIVE_CONTAINER}
     restart: always
