@@ -6,18 +6,18 @@ The connector was created during the first speckle Hackathon from 11th till 14th
 
 ## What it does
 This is a connector for speckle for models derivated via the Autodesk forge model derivative api.
-It converts models avaiable in the svf2 format for forge viewer into speckle geometry.
-The derivated model is viewable with the forge viewer. When the commit button is pressed, it pushes the geometry to the selected speckle stream.
+It converts models avaiable in the svf2 format for forge viewer into speckle geometry / properties.
+The derivated model is viewable with the forge viewer. You can load your own models, see section [Autodesk forge setup](#autodesk-forge-setup). Select your desired stream and now you're good to go! When the commit button is pressed, it pushes the geometry and meta information to the selected speckle stream! Cool, isn't it?
 
 ## Why Forge Model Derivative API?
 Well, it helps us to consume 70+ different file formats into the .svf2 format. This is consumed by the forge viewer.
 An outdated list of supported fileformats can be found here : https://forge.autodesk.com/en/docs/model-derivative/v2/developers_guide/supported-translations/
-With this connector in place we can push all of those derivates to speckle without creating many additional, native, connectors! To create `viewable` results this is maybe enough?
+With this connector in place we can push all of those derivates to speckle without creating many additional, native, connectors! To create `viewable` results this is maybe enough? So we oopen up the specklerverse to software like Inventor, SolidWorks, Maja, 3dMax and do on.
 
-## Prerequisits
-Follow these steps to get a working copy up and running!
+# Prerequisits
+Follow these steps to get a working copy up and running! We work an an completely dockerized version, but can't promise to get it done till the deadline. This is the manual way.
 
-### Autodesk forge
+## Autodesk forge setup
 You need to have a forge account in place to use the model derivate api. You can create a demo user at https://forge.autodesk.com/. The documentation, how to derivate models (in our case a revit model) can be found here : 
 We've used the addin for visual studio code to create derivates. You can install it for free here: https://marketplace.visualstudio.com/items?itemName=petrbroz.vscode-forge-tools
 
@@ -37,20 +37,24 @@ Copy the urn of the 3D View in your new derivate to the clipboard. It needs to b
 ![](/images/forge-addin-vscode-cpoy-urn.png)
 For testing you can use the already added urn to use the model we've derivated.
 
-### add urn of derivate to react app
+## add urn of derivate to react app
 If you want to add oýour own urn for a derivate, it needs to be inserted here:
-
 ![](/images/derivate%20urn.png)
 
-### speckle Server
+## speckle Server and token
 To make it as easy as possible we've used speckle.xyz for testing. Create an account here, add an personal access token for your user. This can be done in the user settings. We need write scope for commiting the geometry from forge!
 The token needs to be inserted in the appsettings.json in our server .net solution. You can find the file in the solution folder.
 ![](/images/visualstudio-appsettings.png)
 ![](/images/speckle-token.png)
 make sure you keep the `,`at the end of the line ;-)
 
-# Using the apps
-These steps need to be done to start the apps
+# Prerequisits for docker
+This feature is wip and not guranteed to be finished until the deadline of the hackathon.
+You wan't to go the easy way? Have docker desktop installed on your machine? Then simply clone the repo, cd in an terminal into the docker subfolder. You need to edit the .env to match your [token](#speckle-server-and-token) and startup [urn](#add-urn-of-derivate-to-react-app). The second one is not important.
+![](/images/docker%20env%20setup.png)
+
+# Starting the system
+If you go the manual way, these steps need to be taken. If you prefer to use docker and the [setup is in place](#prerequisits-for-docker), proceed with [starting with docker](#starting-with-docker).
 
 ## start the backend
 We've created a .net backend to push the geometry to the speckle server. You need to open the solution in visual studio, build the artifacts and start it. The app will start a .net app and launch your default browser showing a swagger api.
@@ -66,6 +70,13 @@ Run `npm start`to start the app. It'll launch your standard browser and open the
 
 The forge viewer will load a default model we've used for testing.
 ![](/images/react-app-started.png)
+
+## starting with docker
+This one is easy! Simply open a terminal, cd into the docker subfolder and enter `docker-compose up -d`
+You have to wait for some time, because the images will be build from the code. once all is done, you can open the [frontend](http://localhost:3000)
+
+# Using the apps
+
 
 ### load your own model
 You can replace the model with you own urn in the input box on the upper left. Press the `Change`button to load your model inside the viewer.
