@@ -10,6 +10,7 @@ namespace Speckle.ModelDerivative.Connector.Api.Services
         public async Task<Base> ConvertToSpeckle(List<Va3cObject> threeObjects)
         {
             Base rootObject = new ();
+            
             List<Base> speckleObjects = new List<Base>();
             foreach(var obj in threeObjects)
             {
@@ -23,13 +24,17 @@ namespace Speckle.ModelDerivative.Connector.Api.Services
                     displayValue.faces = child.Geometry.Data.Faces;
                     displayValue.vertices = child.Geometry.Data.Vertices;
                     displayValue.colors = child.Geometry.Data.Colors;
+                    displayValue.units = "m";
+                    displayValue.area = 0;
+                    displayValue.volume = 0;
 
                     
                     RenderMaterial renderMaterial = new();
                     renderMaterial.emissive = child.Material.Emissive;
                     renderMaterial.diffuse = child.Material.Color;
                     renderMaterial.opacity = child.Material.Opacity;
-                    renderMaterial.metalness = child.Material.Shininess;
+                    renderMaterial.metalness = 0;
+                    renderMaterial.name = "Standard Material";
 
                     displayValue["@renderMaterial"] = renderMaterial;
 
@@ -40,9 +45,9 @@ namespace Speckle.ModelDerivative.Connector.Api.Services
                 speckleObj["@displayValue"] = displayValues;
 
                 speckleObj.applicationId = obj.Uuid;
-                speckleObj.id = obj.Uuid;
+            
 
-                //speckleObj["@parameters"] = obj.UserData;
+                speckleObj["@parameters"] = obj.UserData;
 
                 speckleObjects.Add(speckleObj);
             }
@@ -51,8 +56,8 @@ namespace Speckle.ModelDerivative.Connector.Api.Services
 
             rootObject.totalChildrenCount = speckleObjects.Count;
 
-            rootObject.applicationId = "abcd";
-            rootObject.id = "abcdefg";
+            rootObject.applicationId = Guid.NewGuid().ToString();
+        
 
             return rootObject;
         }

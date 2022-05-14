@@ -52,6 +52,7 @@ namespace Speckle.ModelDerivative.Connector.Api.Controllers
         [ProducesResponseType(typeof(BadRequestResult), 400)]
         [ProducesResponseType(typeof(NotFoundResult), 404)]
         [SwaggerOperation(OperationId = "CommitObjects", Tags = new[] { "Commit" })]
+        [DisableRequestSizeLimit,RequestFormLimits(MultipartBodyLengthLimit = int.MaxValue,ValueLengthLimit = int.MaxValue)]
         public async Task<IActionResult> CommitObjects([FromBody] Va3cContainer va3cContainer)
         {
             if (string.IsNullOrEmpty(va3cContainer.StreamId))
