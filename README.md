@@ -76,7 +76,7 @@ This one is easy! Simply open a terminal, cd into the docker subfolder and enter
 You have to wait for some time, because the images will be build from the code. once all is done, you can open the [frontend](http://localhost:3000)
 
 # Using the apps
-
+To use the app, please follow these steps:
 
 ### load your own model
 You can replace the model with you own urn in the input box on the upper left. Press the `Change`button to load your model inside the viewer.
