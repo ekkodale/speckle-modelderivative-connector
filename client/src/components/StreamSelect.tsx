@@ -27,7 +27,7 @@ const StreamSelect = () => {
   return (
     <div style={{ display: "inline-block", width: "20vw" }}>
       <div className="row">
-        <div>
+        <div className="col">
           <label
             className="input-group-text"
             form="streamID"

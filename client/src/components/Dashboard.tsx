@@ -49,7 +49,7 @@ export const Dashboard = () => {
 
   return (
     <div className="container-fluid" style={{ height: "100vh" }}>
-      <div className="row" style={{ height: "10%", paddingTop: "2%" }}>
+      <div className="row" style={{ height: "15%", paddingTop: "2%" }}>
         <div className="col-sm-3">
           <div className="container" style={{ marginLeft: "5%" }}>
             <div className="input-group mb-3">
@@ -75,32 +75,42 @@ export const Dashboard = () => {
             </div>
           </div>
         </div>
-        <div className="col-sm-4 px-0">
-          <div className="container-fluid row">
+        <div className="col-sm-6 px-0">
+          <div className="container">
             <StreamSelect />
-            <button
-              className="btn btn-outline-primary waves-effect"
-              type="button"
-              style={{ display: "inline-block", width: "8vw", height: "4vh" }}
-              onClick={() => commitFunc()}
-              disabled={!viewerInitialized}
-            >
-              Commit
-              <i className="bi bi-check-lg" style={{ float: "right" }}></i>
-            </button>
-			<button
-              className="btn btn-outline-primary waves-effect"
-              type="button"
-              style={{ display: "inline-block", width: "8vw", height: "4vh" }}
-              onClick={() => commitFuncc()}
-              disabled={!viewerInitialized}
-            >
-              Actually Commit
-              <i className="bi bi-check-lg" style={{ float: "right" }}></i>
-            </button>
+            <div style={{ display: "inline-block" }}>
+              <button
+                className="btn btn-outline-primary waves-effect"
+                type="button"
+                style={{
+                  display: "inline-block",
+                  width: "8vw",
+                  height: "38px",
+                }}
+                onClick={() => commitFunc()}
+                disabled={!viewerInitialized}
+              >
+                Convert
+                <i className="bi bi-download" style={{ float: "right" }}></i>
+              </button>
+              <button
+                className="btn btn-outline-primary waves-effect"
+                type="button"
+                style={{
+                  display: "inline-block",
+                  width: "8vw",
+                  height: "38px",
+                }}
+                onClick={() => commitFuncc()}
+                disabled={!viewerInitialized}
+              >
+                Commit
+                <i className="bi bi-check-lg" style={{ float: "right" }}></i>
+              </button>
+            </div>
           </div>
         </div>
-        <div className="col-sm-5">
+        <div className="col-sm-3">
           <h1
             className="h3"
             style={{
